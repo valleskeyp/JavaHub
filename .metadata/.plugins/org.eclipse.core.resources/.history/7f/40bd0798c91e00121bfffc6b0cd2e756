@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <integer name="red_potion">0</integer>
+    <integer name="blue_potion">0</integer>
+    <integer name="arrows">0</integer>
+    <integer name="bombs">0</integer>
+    
+</resources>

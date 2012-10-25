@@ -4,5 +4,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Java1Project1</string>
+    
+    <string name="item1">Red Potion</string>
+    <string name="item2">Blue Potion</string>
+    <string name="item3">Arrows</string>
+    <string name="item4">Bombs</string>
 
 </resources>
