@@ -252,3 +252,6 @@ Binding(CTRL+SHIFT+ARROW_RIGHT,
 		,,true),null),
 	org.eclipse.ui.defaultAcceleratorConfiguration,
 	org.eclipse.jdt.ui.javaEditorScope,,cocoa,system)
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2012-10-30 10:37:55.055
+!MESSAGE Failed to load properties file for project 'AndroidProject1'
