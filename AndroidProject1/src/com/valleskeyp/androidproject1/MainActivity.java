@@ -1,5 +1,7 @@
 package com.valleskeyp.androidproject1;
 
+import java.util.Random;
+
 import com.valleskeyp.lib.FormMethods;
 
 import android.os.Bundle;
@@ -11,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.LinearLayout.LayoutParams;
 
 public class MainActivity extends Activity {
 
@@ -19,13 +20,10 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Search Movies...", "Go");
-        LinearLayout textView = FormMethods.textView(this, "testing");
-        
+        LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Toy Story 3", "Go");
+        LinearLayout textView = FormMethods.textView(this, "View movie information");
+       
         LinearLayout ll = new LinearLayout(this);
-        LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
-		ll.setLayoutParams(lp);
-		
         Button fieldButton = (Button) entryBox.findViewById(2);
         final TextView textField = (TextView) textView.findViewById(1);
         
@@ -35,19 +33,30 @@ public class MainActivity extends Activity {
 			public void onClick(View v) {
 				//gets edittext tag from button reference
 				EditText field = (EditText) v.getTag();
-				//Log.i("Button clicked: ", field.getText().toString());
+				Log.i("Button clicked: ", field.getText().toString());
 				//use text to get movie but for now just pull movie from movieData resource
-				String title = getString(R.string.title);
-				String rating = getString(R.string.mpaa_rating);
-				String critics = getString(R.string.critics_consensus);
-				String synopsis = getString(R.string.synopsis);
-				textField.setText(title + "\r\n" +
-								"Rating: " + rating + "\r\n" +
-								"Critics Consensus: " + critics + "\r\n" +
-								"Synopsis" + synopsis);
+				Random randomGenerator = new Random();
+			    int rand = randomGenerator.nextInt(4);
+				String[] movie = null;
+				if (rand == 0) {
+					movie = getResources().getStringArray(R.array.up);
+				} else if (rand == 1) {
+					movie = getResources().getStringArray(R.array.toy_story_3);
+				} else if (rand == 2) {
+					movie = getResources().getStringArray(R.array.cars);
+				} else if (rand == 3) {
+					movie = getResources().getStringArray(R.array.finding_nemo);
+				}
+
+				String title = movie[0];
+				String rating = movie[1];
+				//String critics = movie[2];
+				//String synopsis = movie[3];
+				//textField.setText(title + "\r\n" + "Rating: " + rating + "\r\n" + "Critics Consensus: " + critics + "\r\n" + "Synopsis" + synopsis);
+				textField.setText(title + "\r\n" + "Rating: " + rating);
 			}
 		});
-        
+        // add layouts generated from the FormMethods class
         ll.addView(entryBox);
         ll.addView(textView);
         
@@ -59,5 +68,5 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-    // q9gq656wf8xzsacnfza7ndtm rotten tomatoes Key
+    // q9gq656wf8xzsacnfza7ndtm rotten tomatoes API key
 }

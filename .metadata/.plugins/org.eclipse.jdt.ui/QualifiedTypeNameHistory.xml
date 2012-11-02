@@ -1,2 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<qualifiedTypeNameHistroy/>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="com.example.project1.R.string"/>
+<fullyQualifiedTypeName name="java.util.regex.Pattern"/>
+<fullyQualifiedTypeName name="android.content.Context"/>
+<fullyQualifiedTypeName name="android.app.ActionBar.LayoutParams"/>
+<fullyQualifiedTypeName name="android.widget.Button"/>
+<fullyQualifiedTypeName name="android.view.View.OnClickListener"/>
+<fullyQualifiedTypeName name="android.widget.EditText"/>
+<fullyQualifiedTypeName name="android.util.Log"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="com.valleskeyp.data.enumData"/>
+<fullyQualifiedTypeName name="com.valleskeyp.lib.FormMethods"/>
+<fullyQualifiedTypeName name="android.widget.TextView"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout"/>
+<fullyQualifiedTypeName name="android.widget.LinearLayout.LayoutParams"/>
+</qualifiedTypeNameHistroy>
