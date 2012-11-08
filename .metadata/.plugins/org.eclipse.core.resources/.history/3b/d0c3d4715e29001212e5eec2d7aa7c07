@@ -94,7 +94,7 @@ public class MainActivity extends Activity {
     			JSONObject json = new JSONObject(result);
     			if (json.getString("total").compareTo("0")==0) {
 					Toast toast = Toast.makeText(_context, "Invalid Movie", Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.TOP, 0, 70);
+					toast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
 					toast.show();
 				} else {
 					JSONArray ary = json.getJSONArray("movies");
