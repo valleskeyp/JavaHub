@@ -1,8 +1,11 @@
 package com.valleskeyp.lib;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import android.content.Context;
@@ -29,5 +32,37 @@ public class FileStuff {
 			Log.e("WRITE ERROR", filename);
 		}
 		return true;
+	}
+	
+	@SuppressWarnings("resource")
+	public static Object ReadObjectFile(Context context, String filename, Boolean external) {
+		Object content = new Object();
+		try {
+			File file;
+			FileInputStream fin;
+			if (external) {
+				file = new File(context.getExternalFilesDir(null), filename);
+				fin = new FileInputStream(file);
+			} else {
+				file = new File(filename);
+				fin = context.openFileInput(filename);
+			}
+			
+			ObjectInputStream ois = new ObjectInputStream(fin);
+			
+			try {
+				content = (Object) ois.readObject();
+			} catch (ClassNotFoundException e) {
+				Log.e("READ ERROR", "INVALID OBJECT FILE");
+			} 
+			ois.close();
+			fin.close();
+		} catch (FileNotFoundException e) {
+			Log.e("READ ERROR", "FILE NOT FOUND");
+			return null;
+		} catch (IOException e) {
+			Log.e("READ ERROR", "I/O ERROR");
+		}
+			return content;
 	}
 }

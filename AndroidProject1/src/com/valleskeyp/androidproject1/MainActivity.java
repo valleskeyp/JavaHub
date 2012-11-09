@@ -2,6 +2,7 @@ package com.valleskeyp.androidproject1;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -21,9 +22,13 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,21 +38,59 @@ public class MainActivity extends Activity {
 	Context _context;
 	TextView _textField;
 	String _movieTitle;
-	HashMap<String, String> _recent;
+	
+	HashMap<String, String> _recent = new HashMap<String, String>();
+	Spinner _recentsList;
+	ArrayList<String> _recentTitle = new ArrayList<String>();
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _context = this;
-        _recent = new HashMap<String, String>();
+        getAndUpdate();
+                
+        LinearLayout ll = new LinearLayout(this);
+        ll.setOrientation(LinearLayout.VERTICAL);
         
+        //Create layouts from FormMethods
         LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Movie Name", "Go");
         LinearLayout textView = FormMethods.textView(this, "View movie information");
-       
-        LinearLayout ll = new LinearLayout(this);
+        LinearLayout recentsList = FormMethods.RecentDisplay(this);
+        //Get elements from those layouts
         Button fieldButton = (Button) entryBox.findViewById(2);
         _textField = (TextView) textView.findViewById(1);
+        _recentsList = (Spinner) recentsList.findViewById(1);
         
+        //setup recents list
+        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
+        listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        _recentsList.setAdapter(listAdapter);
+        
+        //setup recents listener
+        _recentsList.setOnItemSelectedListener(new OnItemSelectedListener() {
+        	
+        	@Override
+        	public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
+        		Log.i("RECENT SELECTED", "POSITION: " + pos + "\r\nID: " + id);
+        		String str = parent.getItemAtPosition(pos).toString();
+        		
+        		//Gets the selected title from memory and displays it
+        		if (!str.equalsIgnoreCase("Recently viewed movies.")) {
+        			String movieString = _recent.get(str);
+        			try {
+        				JSONObject json = new JSONObject(movieString);
+        				_textField.setText("\r\nTitle: " + json.getString("title") + "\r\n\r\nRating: " + json.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + json.getString("critics_consensus") + "\r\n\r\nSynopsis: " + json.getString("synopsis"));
+        				} catch (JSONException e) {
+        					Log.e("JSON", "JSON OBJECT EXCEPTION");
+        			}
+				}
+        	}
+        	
+        	@Override
+        	public void onNothingSelected(AdapterView<?> parent) {
+        		Log.i("RECENT SELECTED", "NO SELECTION");
+        	}
+		});
         fieldButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
@@ -72,10 +115,42 @@ public class MainActivity extends Activity {
         // add layouts generated from the FormMethods class
         ll.addView(entryBox);
         ll.addView(textView);
-        ll.setOrientation(LinearLayout.VERTICAL);
+        ll.addView(recentsList);
+        
         setContentView(ll);
     }
-
+    
+    private void updateRecents() {
+    	//_recentTitle
+    	
+    	for(String key : _recent.keySet()) {
+    		_recentTitle.add(key);
+    	}
+    }
+    
+    @SuppressWarnings("unchecked")
+	private HashMap<String, String> getRecents() {
+    	Object stored = FileStuff.ReadObjectFile(_context, "recent", false);
+    	
+    	HashMap<String, String> recents;
+    	if (stored == null) {
+			Log.i("RECENTS", "NO RECENTS FOUND");
+			recents = new HashMap<String, String>();
+		} else {
+			recents = (HashMap<String, String>) stored;
+		}
+    	return recents;
+    }
+    
+    //makes sure that whenever the _recent list gets updated, the spinner updates as well
+    private void getAndUpdate() {
+    	if (!_recentTitle.isEmpty()) {
+    		_recentTitle.clear();
+		}
+    	_recentTitle.add("Recently viewed movies.");
+    	_recent = getRecents();
+    	updateRecents();
+    }
     private void getMovie(String name) {
     	String rtURL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=q9gq656wf8xzsacnfza7ndtm&q="+name;
     	URL finalURL;
@@ -118,13 +193,18 @@ public class MainActivity extends Activity {
 			    			
 			    			_recent.put(movieObject.getString("title"), movieObject.toString());
 			    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+			    			getAndUpdate();
 						}
 					}
 				}
     			if (didFind == false) {
     				JSONObject movieObject = json.getJSONArray("movies").getJSONObject(0);
 	    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-				}
+	    			
+	    			_recent.put(movieObject.getString("title"), movieObject.toString());
+	    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+	    			getAndUpdate();
+    			}
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
 			}

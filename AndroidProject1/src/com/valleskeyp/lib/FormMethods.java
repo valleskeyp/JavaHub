@@ -5,6 +5,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 public class FormMethods {
@@ -35,7 +36,7 @@ public class FormMethods {
 	
 	public static LinearLayout textView(Context context, String data) {
 		LinearLayout ll = new LinearLayout(context);
-		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,550);
 		ll.setLayoutParams(lp);
 
 		TextView tv = new TextView(context);
@@ -44,6 +45,19 @@ public class FormMethods {
 		tv.setLayoutParams(lp);
 
 		ll.addView(tv);
+		
+		return ll;
+	}
+	
+	public static LinearLayout RecentDisplay(Context context) {
+		LinearLayout ll = new LinearLayout(context);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		
+		Spinner recents = new Spinner(context);
+		recents.setId(1);
+		recents.setLayoutParams(lp);
+		
+		ll.addView(recents);
 		
 		return ll;
 	}
