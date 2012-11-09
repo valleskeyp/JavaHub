@@ -147,7 +147,7 @@ public class MainActivity extends Activity {
     	if (!_recentTitle.isEmpty()) {
     		_recentTitle.clear();
 		}
-    	_recentTitle.add("View recent movies.");
+    	_recentTitle.add("Recently viewed movies.");
     	_recent = getRecents();
     	updateRecents();
     }
