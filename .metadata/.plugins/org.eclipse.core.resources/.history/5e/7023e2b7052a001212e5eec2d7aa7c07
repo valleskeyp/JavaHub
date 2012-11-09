@@ -2,13 +2,11 @@ package com.valleskeyp.androidproject1;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.valleskeyp.lib.FileStuff;
 import com.valleskeyp.lib.FormMethods;
 import com.valleskeyp.lib.WebStuff;
 
@@ -33,13 +31,10 @@ public class MainActivity extends Activity {
 	Context _context;
 	TextView _textField;
 	String _movieTitle;
-	HashMap<String, String> _recent;
-	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         _context = this;
-        _recent = new HashMap<String, String>();
         
         LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Movie Name", "Go");
         LinearLayout textView = FormMethods.textView(this, "View movie information");
@@ -115,9 +110,6 @@ public class MainActivity extends Activity {
 							didFind = true;
 							JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
 			    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-			    			
-			    			_recent.put(movieObject.getString("title"), movieObject.toString());
-			    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
 						}
 					}
 				}
