@@ -17,6 +17,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.text.method.LinkMovementMethod;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -57,12 +58,11 @@ public class MainActivity extends Activity {
         LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Movie Name", "Go");
         LinearLayout textView = FormMethods.textView(this, "View movie information");
         LinearLayout recentsList = FormMethods.RecentDisplay(this);
-        
         //Get elements from those layouts
         Button fieldButton = (Button) entryBox.findViewById(2);
         _textField = (TextView) textView.findViewById(1);
         _recentsList = (Spinner) recentsList.findViewById(1);
-        _textField.setMovementMethod(new ScrollingMovementMethod());
+        _textField.setMovementMethod(LinkMovementMethod.getInstance());
         
         //setup recents list
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         		String str = parent.getItemAtPosition(pos).toString();
         		
         		//Gets the selected title from memory and displays it
-        		if (!(pos == 0)) {
+        		if (!str.equalsIgnoreCase("View recent movies.")) {
         			String movieString = _recent.get(str);
         			try {
         				JSONObject json = new JSONObject(movieString);

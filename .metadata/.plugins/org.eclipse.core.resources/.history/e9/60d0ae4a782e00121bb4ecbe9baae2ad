@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         		String str = parent.getItemAtPosition(pos).toString();
         		
         		//Gets the selected title from memory and displays it
-        		if (!(pos == 0)) {
+        		if (!str.equalsIgnoreCase("View recent movies.")) {
         			String movieString = _recent.get(str);
         			try {
         				JSONObject json = new JSONObject(movieString);
