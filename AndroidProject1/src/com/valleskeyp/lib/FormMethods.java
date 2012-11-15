@@ -1,6 +1,11 @@
 package com.valleskeyp.lib;
 
+
+import android.R;
+import android.app.Activity;
 import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -8,7 +13,7 @@ import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-public class FormMethods {
+public class FormMethods extends Activity {
 	// holds methods to help with Form layout
 	 
 	public static LinearLayout textEntryWithSideButton(Context context, String hint, String ButtonText) {
@@ -40,6 +45,10 @@ public class FormMethods {
 		ll.setLayoutParams(lp);
 
 		TextView tv = new TextView(context);
+		
+		//TextView tView = (TextView)getLayoutInflater().inflate(R.layout.txtview, null);
+		//TextView tView = (TextView) getLayoutInflater().inflate(R.layout.txtview, null);	
+		
 		tv.setText(data);
 		tv.setId(1);
 		tv.setLayoutParams(lp);

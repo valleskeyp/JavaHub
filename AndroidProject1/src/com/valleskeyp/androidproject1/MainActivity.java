@@ -13,6 +13,7 @@ import com.valleskeyp.lib.FileStuff;
 import com.valleskeyp.lib.FormMethods;
 import com.valleskeyp.lib.WebStuff;
 
+import android.R;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -20,6 +21,7 @@ import android.content.Context;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -47,6 +49,9 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(android.R.style.Theme_Black);
+        
+        TextView tView = (TextView)getLayoutInflater().inflate(R.layout.txtview, null);
         _context = this;
         getAndUpdate();
                 
@@ -62,6 +67,8 @@ public class MainActivity extends Activity {
         Button fieldButton = (Button) entryBox.findViewById(2);
         _textField = (TextView) textView.findViewById(1);
         _recentsList = (Spinner) recentsList.findViewById(1);
+        
+        //setup scrolling on textview
         _textField.setMovementMethod(new ScrollingMovementMethod());
         
         //setup recents list
