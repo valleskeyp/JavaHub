@@ -1,16 +1,17 @@
 package com.valleskeyp.lib;
 
 
-import android.R;
+import com.valleskeyp.androidproject1.R;
+
 import android.app.Activity;
 import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.graphics.Color;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.Spinner;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class FormMethods extends Activity {
@@ -41,13 +42,11 @@ public class FormMethods extends Activity {
 	
 	public static LinearLayout textView(Context context, String data) {
 		LinearLayout ll = new LinearLayout(context);
-		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,550);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,510);
 		ll.setLayoutParams(lp);
 
 		TextView tv = new TextView(context);
-		
-		//TextView tView = (TextView)getLayoutInflater().inflate(R.layout.txtview, null);
-		//TextView tView = (TextView) getLayoutInflater().inflate(R.layout.txtview, null);	
+			
 		
 		tv.setText(data);
 		tv.setId(1);
@@ -67,6 +66,21 @@ public class FormMethods extends Activity {
 		recents.setLayoutParams(lp);
 		
 		ll.addView(recents);
+		
+		return ll;
+	}
+	
+	public static LinearLayout ImageButton(Context context) {
+		LinearLayout ll = new LinearLayout(context);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		
+		ImageButton button = new ImageButton(context);
+		button.setId(1);
+		button.setImageResource(R.drawable.flixster_logo);
+		button.setBackgroundColor(Color.DKGRAY);
+		button.setLayoutParams(lp);
+		
+		ll.addView(button);
 		
 		return ll;
 	}

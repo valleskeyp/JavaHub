@@ -13,15 +13,15 @@ import com.valleskeyp.lib.FileStuff;
 import com.valleskeyp.lib.FormMethods;
 import com.valleskeyp.lib.WebStuff;
 
-import android.R;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -30,6 +30,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -41,6 +42,7 @@ public class MainActivity extends Activity {
 	Context _context;
 	TextView _textField;
 	String _movieTitle;
+	ImageButton _imageButton;
 	
 	HashMap<String, String> _recent = new HashMap<String, String>();
 	Spinner _recentsList;
@@ -51,22 +53,26 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
         
-        TextView tView = (TextView)getLayoutInflater().inflate(R.layout.txtview, null);
+        
         _context = this;
         getAndUpdate();
                 
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         
+        
+        
         //Create layouts from FormMethods
         LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Movie Name", "Go");
         LinearLayout textView = FormMethods.textView(this, "View movie information");
         LinearLayout recentsList = FormMethods.RecentDisplay(this);
+        LinearLayout imgButton = FormMethods.ImageButton(this);
         
         //Get elements from those layouts
         Button fieldButton = (Button) entryBox.findViewById(2);
         _textField = (TextView) textView.findViewById(1);
         _recentsList = (Spinner) recentsList.findViewById(1);
+        _imageButton = (ImageButton) imgButton.findViewById(1);
         
         //setup scrolling on textview
         _textField.setMovementMethod(new ScrollingMovementMethod());
@@ -122,11 +128,22 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
+        _imageButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				Uri uri = Uri.parse("http://www.flixster.com/movies-in-theaters/");
+				 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				 startActivity(intent);
+				
+			}
+		});
+        
         // add layouts generated from the FormMethods class
         ll.addView(entryBox);
         ll.addView(textView);
         ll.addView(recentsList);
-        
+        ll.addView(imgButton);
         setContentView(ll);
     }
     
