@@ -54,8 +54,7 @@ public class SecondView extends Activity {
 		}
 		
 		_listView.setOnItemClickListener(new OnItemClickListener() {
-			// when user clicks a row, it saves the title of the position clicked
-			// then it executes the finish method
+
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				// TODO Auto-generated method stub
@@ -73,7 +72,6 @@ public class SecondView extends Activity {
 
 		});
 	}
-	//pass back the user choice along with data for ease of reading and manipulating
 	@Override
 	public void finish() {
 		// TODO Auto-generated method stub

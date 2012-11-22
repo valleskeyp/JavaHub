@@ -209,7 +209,6 @@ public class MainActivity extends Activity {
 					toast.setGravity(Gravity.TOP, 0, 70);
 					toast.show();
 				} else {
-					//open SecondView and pass along the JSONdata
 					Intent i = new Intent(_context, SecondView.class);
 					i.putExtra("JSONdata", result);
 					startActivityForResult(i, 1);
@@ -217,6 +216,7 @@ public class MainActivity extends Activity {
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
 			}
+    		
     	}
     }
     //get the Intent data back from SecondView and use it to display the chosen movie and save it to recents

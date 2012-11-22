@@ -132,7 +132,6 @@ public class MainActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				//open movie website with implicit intent
 				Uri uri = Uri.parse("http://www.flixster.com/movies-in-theaters/");
 				 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 				 startActivity(intent);
@@ -209,7 +208,6 @@ public class MainActivity extends Activity {
 					toast.setGravity(Gravity.TOP, 0, 70);
 					toast.show();
 				} else {
-					//open SecondView and pass along the JSONdata
 					Intent i = new Intent(_context, SecondView.class);
 					i.putExtra("JSONdata", result);
 					startActivityForResult(i, 1);
@@ -217,19 +215,19 @@ public class MainActivity extends Activity {
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
 			}
+    		
     	}
     }
-    //get the Intent data back from SecondView and use it to display the chosen movie and save it to recents
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     	// TODO Auto-generated method stub
     	super.onActivityResult(requestCode, resultCode, data);
     	if (resultCode == RESULT_OK) {
-    		//"title" of chosen movie, "result" of json data to parse below
     		String title = (String) data.getExtras().getString("title");
     		String result = (String) data.getExtras().getString("result");
     		
     		try {
+
     			JSONObject json = new JSONObject(result);
     			JSONArray ary = json.getJSONArray("movies");
     			for (int i = 0; i < ary.length(); i++) {
