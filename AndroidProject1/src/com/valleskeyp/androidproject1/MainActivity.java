@@ -209,34 +209,69 @@ public class MainActivity extends Activity {
 					toast.setGravity(Gravity.TOP, 0, 70);
 					toast.show();
 				} else {
-					JSONArray ary = json.getJSONArray("movies");
-					for (int i = 0; i < ary.length(); i++) {
-						JSONObject tmp = ary.getJSONObject(i);
-						Log.i("MOVIE NAME",tmp.getString("title"));
-						if ((tmp.getString("title")).equalsIgnoreCase(_movieTitle)) {
-							didFind = true;
-							JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
-			    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-			    			
-			    			_recent.put(movieObject.getString("title"), movieObject.toString());
-			    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
-			    			getAndUpdate();
-						}
-					}
+					Intent i = new Intent(_context, SecondView.class);
+					i.putExtra("JSONdata", result);
+					startActivityForResult(i, 1);
+					
+//					JSONArray ary = json.getJSONArray("movies");
+//					for (int i = 0; i < ary.length(); i++) {
+//						JSONObject tmp = ary.getJSONObject(i);
+//						Log.i("MOVIE NAME",tmp.getString("title"));
+//						if ((tmp.getString("title")).equalsIgnoreCase(_movieTitle)) {
+//							didFind = true;
+//							JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
+//			    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
+//			    			
+//			    			_recent.put(movieObject.getString("title"), movieObject.toString());
+//			    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+//			    			getAndUpdate();
+//						}
+//					}
 				}
-    			if (didFind == false) {
-    				JSONObject movieObject = json.getJSONArray("movies").getJSONObject(0);
-	    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-	    			
-	    			_recent.put(movieObject.getString("title"), movieObject.toString());
-	    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
-	    			getAndUpdate();
-    			}
+//    			if (didFind == false) {
+//    				JSONObject movieObject = json.getJSONArray("movies").getJSONObject(0);
+//	    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
+//	    			
+//	    			_recent.put(movieObject.getString("title"), movieObject.toString());
+//	    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+//	    			getAndUpdate();
+//    			}
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
 			}
     		
     	}
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    	// TODO Auto-generated method stub
+    	super.onActivityResult(requestCode, resultCode, data);
+    	if (resultCode == RESULT_OK) {
+    		String title = (String) data.getExtras().getString("title");
+    		String result = (String) data.getExtras().getString("result");
+    		
+    		try {
+
+    			JSONObject json = new JSONObject(result);
+    			JSONArray ary = json.getJSONArray("movies");
+    			for (int i = 0; i < ary.length(); i++) {
+					JSONObject tmp = ary.getJSONObject(i);
+					if ((tmp.getString("title")).equalsIgnoreCase(title)) {
+						JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
+		    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
+		    			
+		    			_recent.put(movieObject.getString("title"), movieObject.toString());
+		    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+		    			getAndUpdate();
+					}
+				}
+
+    		} catch (JSONException e) {
+    			Log.e("JSON", "JSON OBJECT EXCEPTION");
+    		}
+			
+			
+		}
     }
     
     @Override

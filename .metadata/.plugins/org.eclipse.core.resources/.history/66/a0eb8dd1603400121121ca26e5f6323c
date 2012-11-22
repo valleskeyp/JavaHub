@@ -1,0 +1,49 @@
+package com.valleskeyp.androidproject1;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
+
+public class SecondView extends Activity {
+	Context _context;
+	ArrayAdapter<String> _nameArray;
+	ListView _listView;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.second);
+
+		_context = this;
+		_listView = (ListView) findViewById(R.id.listView1);
+		_nameArray = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1);
+		
+		Intent i = getIntent();
+		String result = i.getStringExtra("JSONdata");
+		
+		//Setup listview with JSON data passed from MainActivity
+		try {
+
+			JSONObject json = new JSONObject(result);
+			JSONArray ary = json.getJSONArray("movies");
+			for (int tmp = 0; tmp < ary.length(); tmp++) {
+				JSONObject object = ary.getJSONObject(tmp);
+				_nameArray.add(ary.getString(tmp));
+//				Log.i("MOVIE NAME",tmp.getString("title"));
+			}
+
+		} catch (JSONException e) {
+			Log.e("JSON", "JSON OBJECT EXCEPTION");
+		}
+	}
+}
