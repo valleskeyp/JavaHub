@@ -1,8 +1,0 @@
-package com.valleskeyp.data;
-
-public interface DataAccess {
-	//possibly make an interface that saves data
-	
-	//public returnType methodName(dataType inputName)
-	
-}
