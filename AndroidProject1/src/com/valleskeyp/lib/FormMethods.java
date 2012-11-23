@@ -42,7 +42,7 @@ public class FormMethods extends Activity {
 	
 	public static LinearLayout textView(Context context, String data) {
 		LinearLayout ll = new LinearLayout(context);
-		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,510);
+		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT,1.0f);
 		ll.setLayoutParams(lp);
 
 		TextView tv = new TextView(context);
@@ -72,15 +72,24 @@ public class FormMethods extends Activity {
 	
 	public static LinearLayout ImageButton(Context context) {
 		LinearLayout ll = new LinearLayout(context);
-		LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT);
+		
+		LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT,LayoutParams.WRAP_CONTENT);
+		LayoutParams lp2 = new LayoutParams(0,LayoutParams.WRAP_CONTENT,0.3f);
+		
+		TextView txt = new TextView(context);
+		txt.setLayoutParams(lp2);
+		TextView txt2 = new TextView(context);
+		txt2.setLayoutParams(lp2);
 		
 		ImageButton button = new ImageButton(context);
 		button.setId(1);
-		button.setImageResource(R.drawable.flixster_logo);
-		button.setBackgroundColor(Color.DKGRAY);
+		button.setImageResource(R.drawable.rotten_tomatoes_logo);
+		button.setBackgroundColor(Color.BLACK);
 		button.setLayoutParams(lp);
 		
+		ll.addView(txt);
 		ll.addView(button);
+		ll.addView(txt2);
 		
 		return ll;
 	}

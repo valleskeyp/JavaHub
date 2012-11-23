@@ -53,7 +53,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
         
-        
+        _movieTitle = "";
         _context = this;
         getAndUpdate();
                 
@@ -95,6 +95,7 @@ public class MainActivity extends Activity {
         			String movieString = _recent.get(str);
         			try {
         				JSONObject json = new JSONObject(movieString);
+        				_movieTitle = json.getString("title");
         				_textField.setText("\r\nTitle: " + json.getString("title") + "\r\n\r\nRating: " + json.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + json.getString("critics_consensus") + "\r\n\r\nSynopsis: " + json.getString("synopsis"));
         				} catch (JSONException e) {
         					Log.e("JSON", "JSON OBJECT EXCEPTION");
@@ -120,6 +121,12 @@ public class MainActivity extends Activity {
 				//check network access first, then begin process of getting api data with field string
 				_connected = WebStuff.getConnectionStatus(_context);
 				if (_connected) {
+					if (_movieTitle.equals("")) {
+						return;
+					}
+					Toast toast = Toast.makeText(_context, "Attempting to retrieve movie data", Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.TOP, 0, 70);
+					toast.show();
 					//have connection, now send API request
 					getMovie(field.getText().toString().trim().replace(" ", "+"));
 				} else {
@@ -133,10 +140,12 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//open movie website with implicit intent
-				Uri uri = Uri.parse("http://www.flixster.com/movies-in-theaters/");
-				 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-				 startActivity(intent);
-				
+				if (!(_movieTitle.equals(""))) {
+					String str = _movieTitle.replace("The", "").trim().replace(" ", "_");
+					Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					startActivity(intent);
+				}
 			}
 		});
         
@@ -236,6 +245,7 @@ public class MainActivity extends Activity {
 					JSONObject tmp = ary.getJSONObject(i);
 					if ((tmp.getString("title")).equalsIgnoreCase(title)) {
 						JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
+						_movieTitle = movieObject.getString("title");
 		    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 		    			
 		    			_recent.put(movieObject.getString("title"), movieObject.toString());
