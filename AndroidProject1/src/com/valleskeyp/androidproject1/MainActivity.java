@@ -10,7 +10,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.valleskeyp.lib.FileStuff;
-import com.valleskeyp.lib.FormMethods;
 import com.valleskeyp.lib.WebStuff;
 
 import android.net.Uri;
@@ -19,6 +18,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
+        setContentView(R.layout.main_view);
         
         _movieTitle = "";
         _context = this;
@@ -60,19 +61,12 @@ public class MainActivity extends Activity {
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         
-        
-        
-        //Create layouts from FormMethods
-        LinearLayout entryBox = FormMethods.textEntryWithSideButton(this, "Movie Name", "Go");
-        LinearLayout textView = FormMethods.textView(this, "View movie information");
-        LinearLayout recentsList = FormMethods.RecentDisplay(this);
-        LinearLayout imgButton = FormMethods.ImageButton(this);
-        
-        //Get elements from those layouts
-        Button fieldButton = (Button) entryBox.findViewById(2);
-        _textField = (TextView) textView.findViewById(1);
-        _recentsList = (Spinner) recentsList.findViewById(1);
-        _imageButton = (ImageButton) imgButton.findViewById(1);
+        //Get elements from layouts
+        Button fieldButton = (Button) findViewById(R.id.edit_button);
+        _textField = (TextView) findViewById(R.id.text_view);
+        _recentsList = (Spinner) findViewById(R.id.recents_list);
+        _imageButton = (ImageButton) findViewById(R.id.imageButton1);
+        _imageButton.setBackgroundColor(Color.BLACK);
         
         //setup scrolling on textview
         _textField.setMovementMethod(new ScrollingMovementMethod());
@@ -113,7 +107,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				//gets edittext tag from button reference
-				EditText field = (EditText) v.getTag();
+				EditText field = (EditText) findViewById(R.id.edit_field);
 				//hide keyboard after button press
 				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(field.getWindowToken(), 0);
@@ -148,13 +142,6 @@ public class MainActivity extends Activity {
 				}
 			}
 		});
-        
-        // add layouts generated from the FormMethods class
-        ll.addView(entryBox);
-        ll.addView(textView);
-        ll.addView(recentsList);
-        ll.addView(imgButton);
-        setContentView(ll);
     }
     
     private void updateRecents() {

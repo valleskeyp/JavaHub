@@ -16,6 +16,14 @@ import android.widget.TextView;
 
 public class FormMethods extends Activity {
 	// holds methods to help with Form layout
+	
+	
+	
+	// NO LONGER USED.  Converted to XML layouts
+	// Will leave here as a reference.
+	
+	
+	
 	 
 	public static LinearLayout textEntryWithSideButton(Context context, String hint, String ButtonText) {
 		LinearLayout ll = new LinearLayout(context);
