@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.valleskeyp.androidproject1.MainFragment.MainListener;
 import com.valleskeyp.lib.FileStuff;
 import com.valleskeyp.lib.WebStuff;
 
@@ -18,25 +19,17 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MainListener{
 	
 	Boolean _connected = false;
 	Context _context;
@@ -52,7 +45,7 @@ public class MainActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
-        setContentView(R.layout.main_view);
+        setContentView(R.layout.main_fragment);
         
         _movieTitle = "";
         _context = this;
@@ -61,87 +54,16 @@ public class MainActivity extends Activity {
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         
-        //Get elements from layouts
-        Button fieldButton = (Button) findViewById(R.id.edit_button);
+        //Get elements from XML Layouts
         _textField = (TextView) findViewById(R.id.text_view);
         _recentsList = (Spinner) findViewById(R.id.recents_list);
         _imageButton = (ImageButton) findViewById(R.id.imageButton1);
-        _imageButton.setBackgroundColor(Color.BLACK);
-        
-        //setup scrolling on textview
-        _textField.setMovementMethod(new ScrollingMovementMethod());
+
         
         //setup recents list
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
         listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         _recentsList.setAdapter(listAdapter);
-        
-        //setup recents listener
-        _recentsList.setOnItemSelectedListener(new OnItemSelectedListener() {
-        	
-        	@Override
-        	public void onItemSelected(AdapterView<?> parent, View v, int pos, long id) {
-        		Log.i("RECENT SELECTED", "POSITION: " + pos + "\r\nID: " + id);
-        		String str = parent.getItemAtPosition(pos).toString();
-        		
-        		//Gets the selected title from memory and displays it
-        		if (!(pos == 0)) {
-        			String movieString = _recent.get(str);
-        			try {
-        				JSONObject json = new JSONObject(movieString);
-        				_movieTitle = json.getString("title");
-        				_textField.setText("\r\nTitle: " + json.getString("title") + "\r\n\r\nRating: " + json.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + json.getString("critics_consensus") + "\r\n\r\nSynopsis: " + json.getString("synopsis"));
-        				} catch (JSONException e) {
-        					Log.e("JSON", "JSON OBJECT EXCEPTION");
-        			}
-				}
-        	}
-        	
-        	@Override
-        	public void onNothingSelected(AdapterView<?> parent) {
-        		Log.i("RECENT SELECTED", "NO SELECTION");
-        	}
-		});
-        fieldButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				//gets edittext tag from button reference
-				EditText field = (EditText) findViewById(R.id.edit_field);
-				//hide keyboard after button press
-				InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(field.getWindowToken(), 0);
-				_movieTitle = field.getText().toString().trim();
-				//check network access first, then begin process of getting api data with field string
-				_connected = WebStuff.getConnectionStatus(_context);
-				if (_connected) {
-					if (_movieTitle.equals("")) {
-						return;
-					}
-					Toast toast = Toast.makeText(_context, "Attempting to retrieve movie data", Toast.LENGTH_LONG);
-					toast.setGravity(Gravity.TOP, 0, 70);
-					toast.show();
-					//have connection, now send API request
-					getMovie(field.getText().toString().trim().replace(" ", "+"));
-				} else {
-					//no connection.
-					_textField.setText("Sorry, unable to search without a working connection.\n\rPlease connect and try again.");
-				}
-			}
-		});
-        _imageButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				//open movie website with implicit intent
-				if (!(_movieTitle.equals(""))) {
-					String str = _movieTitle.replace("The", "").trim().replace(" ", "_");
-					Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					startActivity(intent);
-				}
-			}
-		});
     }
     
     private void updateRecents() {
@@ -255,4 +177,56 @@ public class MainActivity extends Activity {
         return true;
     }
     // q9gq656wf8xzsacnfza7ndtm rotten tomatoes API key
+
+    
+    
+    // MainListener interface methods from the MainFragment
+    
+	@Override
+	public void onRecentSelect(String recentTitle) {
+		String movieString = _recent.get(recentTitle);
+		try {
+			JSONObject json = new JSONObject(movieString);
+			_movieTitle = json.getString("title");
+			_textField.setText("\r\nTitle: " + json.getString("title") + "\r\n\r\nRating: " + json.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + json.getString("critics_consensus") + "\r\n\r\nSynopsis: " + json.getString("synopsis"));
+			} catch (JSONException e) {
+				Log.e("JSON", "JSON OBJECT EXCEPTION");
+		}
+		
+	}
+
+	@Override
+	public void onSearchGo(String searchedTitle) {
+		//check network access first, then begin process of getting api data with field string
+		_connected = WebStuff.getConnectionStatus(_context);
+		if (_connected) {
+			if (searchedTitle.equals("")) {
+				return;
+			}
+			Toast toast = Toast.makeText(_context, "Attempting to retrieve movie data", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.TOP, 0, 70);
+			toast.show();
+			//have connection, now send API request
+			getMovie(searchedTitle.trim().replace(" ", "+"));
+		} else {
+			//no connection.
+			_textField.setText("Sorry, unable to search without a working connection.\n\rPlease connect and try again.");
+		}
+	}
+
+	@Override
+	public void openWebIntent() {
+		//open movie website with implicit intent
+		if (!(_movieTitle.equals(""))) {   // Ok.  So after more testing this new addition DOES work, it deletes all instances of 'the'.
+										   // Then when there is a 'the' deleted in the middle it leaves a '  ' double blank space.
+										   // I then convert that to ' the ' to restore the middle instances.  BUT, now I have encountered another
+										   // problem in that certain movies are even more problematic.  if movies have the same name, the movie title
+										   // must be prepended with the movie's ID number and a '-'...  I am pleased with my logic at this point and
+										   // will not pursue it any further I think.
+			String str = _movieTitle.replace("The", "").trim().replace("  ", " the ").replace(" ", "_");
+			Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
+			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+			startActivity(intent);
+		}
+	}
 }
