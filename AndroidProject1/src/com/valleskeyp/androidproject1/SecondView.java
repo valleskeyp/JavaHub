@@ -4,19 +4,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.valleskeyp.androidproject1.SecondFragment.SecondListener;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
 
 
-public class SecondView extends Activity {
+public class SecondView extends Activity implements SecondListener {
 	Context _context;
 	ArrayAdapter<String> _nameArray;
 	ListView _listView;
@@ -28,7 +27,7 @@ public class SecondView extends Activity {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setTheme(android.R.style.Theme_Black);
-		setContentView(R.layout.second);
+		setContentView(R.layout.second_fragment);
 
 		_context = this;
 		_listView = (ListView) findViewById(R.id.listView1);
@@ -50,28 +49,10 @@ public class SecondView extends Activity {
 			_listView.setAdapter(_nameArray);
 
 		} catch (JSONException e) {
-			Log.e("JSON", "JSON OBJECT EXCEPTION");
+			Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
 		}
 		
-		_listView.setOnItemClickListener(new OnItemClickListener() {
-			// when user clicks a row, it saves the title of the position clicked
-			// then it executes the finish method
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				// TODO Auto-generated method stub
-				try {
-
-					JSONObject json = new JSONObject(_result);
-					JSONArray ary = json.getJSONArray("movies");
-					JSONObject object = ary.getJSONObject(position);
-					_finishWithTitle = object.getString("title");
-				} catch (JSONException e) {
-					Log.e("JSON", "JSON OBJECT EXCEPTION");
-				}
-				finish();
-			}
-
-		});
+		
 	}
 	//pass back the user choice along with data for ease of reading and manipulating
 	@Override
@@ -83,5 +64,17 @@ public class SecondView extends Activity {
 		
 		setResult(RESULT_OK, data);
 		super.finish();
+	}
+	@Override
+	public void onListClick(int position, String movieTitle) {
+		try {
+			JSONObject json = new JSONObject(_result);
+			JSONArray ary = json.getJSONArray("movies");
+			JSONObject object = ary.getJSONObject(position);
+			_finishWithTitle = object.getString("title");
+		} catch (JSONException e) {
+			Log.e("JSON", "JSON OBJECT EXCEPTION");
+		}
+		finish();	
 	}
 }

@@ -2,5 +2,6 @@
 <lint>
     <issue id="HardcodedText">
         <ignore path="res/layout/main_view.xml" />
+        <ignore path="res/layout/second.xml" />
     </issue>
 </lint>
