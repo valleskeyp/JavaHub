@@ -26,7 +26,6 @@ import android.view.Menu;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -130,31 +129,12 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 					toast.setGravity(Gravity.TOP, 0, 70);
 					toast.show();
 				} else {
-					SecondFragment viewer = (SecondFragment) getFragmentManager().findFragmentById(R.id.secondFragment);
-				    if (viewer == null || !viewer.isInLayout()) {
-				    	//open SecondView and pass along the JSONdata
-						Intent i = new Intent(_context, SecondView.class);
-						i.putExtra("JSONdata", result);
-						startActivityForResult(i, 1);
-				    } else {
-				    	try {
-				    		ListView listView = (ListView) findViewById(R.id.listView1);
-				    		ArrayAdapter<String> nameArray;
-				    		nameArray = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1);
-							JSONArray ary = json.getJSONArray("movies");
-							for (int tmp = 0; tmp < ary.length(); tmp++) {
-								JSONObject object = ary.getJSONObject(tmp);
-								String str = object.getString("title") + "  (" + object.getString("year") + ")";
-								nameArray.add(str);
-							}
-							listView.setAdapter(nameArray);
-
-						} catch (JSONException e) {
-							Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
-						}
-					}
-					_result = result;
 					
+					_result = result;
+					//open SecondView and pass along the JSONdata
+					Intent i = new Intent(_context, SecondView.class);
+					i.putExtra("JSONdata", result);
+					startActivityForResult(i, 1);
 				}
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
@@ -257,23 +237,9 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			startActivity(intent);
 		}
 	}
-	
-	// SecondListener interface method from SecondFragment
+
 	@Override
-	public void onListClick(int position) {
-		try {
-			JSONObject json = new JSONObject(_result);
-
-			JSONObject movieObject = json.getJSONArray("movies").getJSONObject(position);
-			_movieTitle = movieObject.getString("title");
-			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-
-			_recent.put(movieObject.getString("title"), movieObject.toString());
-			FileStuff.storeObjectFile(_context, "recent", _recent, false);
-			getAndUpdate();
-			
-		} catch (JSONException e) {
-			Log.e("JSON", "JSON OBJECT EXCEPTION");
-		}
+	public void onListClick(int position, String movieTitle) {
+		Log.i("ONLISTCLICK", "THIS SHOWS THAT ONLISTCLICK IN MAINACTIVITY WAS CLICKED");
 	}
 }

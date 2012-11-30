@@ -260,20 +260,7 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 	
 	// SecondListener interface method from SecondFragment
 	@Override
-	public void onListClick(int position) {
-		try {
-			JSONObject json = new JSONObject(_result);
-
-			JSONObject movieObject = json.getJSONArray("movies").getJSONObject(position);
-			_movieTitle = movieObject.getString("title");
-			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
-
-			_recent.put(movieObject.getString("title"), movieObject.toString());
-			FileStuff.storeObjectFile(_context, "recent", _recent, false);
-			getAndUpdate();
-			
-		} catch (JSONException e) {
-			Log.e("JSON", "JSON OBJECT EXCEPTION");
-		}
+	public void onListClick(int position, String movieTitle) {
+		Log.i("ONLISTCLICK", "THIS SHOWS THAT ONLISTCLICK IN MAINACTIVITY WAS CLICKED");
 	}
 }

@@ -66,7 +66,7 @@ public class SecondView extends Activity implements SecondListener {
 		super.finish();
 	}
 	@Override
-	public void onListClick(int position) {
+	public void onListClick(int position, String movieTitle) {
 		try {
 			JSONObject json = new JSONObject(_result);
 			JSONArray ary = json.getJSONArray("movies");
