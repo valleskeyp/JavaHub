@@ -66,7 +66,7 @@ public class MainFragment extends Fragment {
         	}
 		});
         
-        //Go button listener for search bar
+        //Search button listener for search bar
         fieldButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override

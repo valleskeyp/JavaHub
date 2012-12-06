@@ -47,6 +47,7 @@ public final class R {
     }
     public static final class style {
         public static final int AppTheme=0x7f050000;
-        public static final int Theme_MyTheme=0x7f050001;
+        public static final int Theme_DarkTheme=0x7f050002;
+        public static final int Theme_LightTheme=0x7f050001;
     }
 }

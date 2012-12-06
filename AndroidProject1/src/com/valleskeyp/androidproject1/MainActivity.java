@@ -1,7 +1,5 @@
 package com.valleskeyp.androidproject1;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -12,14 +10,16 @@ import org.json.JSONObject;
 import com.valleskeyp.androidproject1.MainFragment.MainListener;
 import com.valleskeyp.androidproject1.SecondFragment.SecondListener;
 import com.valleskeyp.lib.FileStuff;
+import com.valleskeyp.lib.WebService;
 import com.valleskeyp.lib.WebStuff;
 
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -32,6 +32,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements MainListener, SecondListener{
+	
+	private ResponseReceiver receiver;
 	
 	Boolean _connected = false;
 	Context _context;
@@ -48,7 +50,13 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
+        
         setContentView(R.layout.main_fragment);
+        
+        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESPONSE);
+        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new ResponseReceiver();
+        registerReceiver(receiver, filter);
         
         _movieTitle = "";
         _context = this;
@@ -100,70 +108,69 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     	_recent = getRecents();
     	updateRecents();
     }
-    private void getMovie(String name) {
-    	String rtURL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=q9gq656wf8xzsacnfza7ndtm&q="+name;
-    	URL finalURL;
-    	try {
-			finalURL = new URL(rtURL);
-			MovieRequest mq = new MovieRequest();
-			mq.execute(finalURL);
-		} catch (MalformedURLException e) {
-			Log.e("BAD URL", "MALFORMED URL");
-			finalURL = null;
-		}
-    }
+//    private void getMovie(String name) {
+//    	String rtURL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=q9gq656wf8xzsacnfza7ndtm&q="+name;
+//    	URL finalURL;
+//    	try {
+//			finalURL = new URL(rtURL);
+//			MovieRequest mq = new MovieRequest();
+//			mq.execute(finalURL);
+//		} catch (MalformedURLException e) {
+//			Log.e("BAD URL", "MALFORMED URL");
+//			finalURL = null;
+//		}
+//    }
     
-    private class MovieRequest extends AsyncTask<URL, Void, String> {
-    	protected String doInBackground(URL... urls) {
-    		String response = "";
-    		for (URL url: urls) {
-				response = WebStuff.APICall(url);
-			}
-    		return response;
-    	};
-    	@Override
-    	protected void onPostExecute(String result) {
-    		try {
-    			JSONObject json = new JSONObject(result);
-    			if (json.getString("total").compareTo("0")==0) {
-					Toast toast = Toast.makeText(_context, "Invalid Movie", Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.TOP, 0, 70);
-					toast.show();
-				} else {
-					SecondFragment viewer = (SecondFragment) getFragmentManager().findFragmentById(R.id.secondFragment);
-				    if (viewer == null || !viewer.isInLayout()) {
-				    	//open SecondView and pass along the JSONdata
-						Intent i = new Intent(_context, SecondView.class);
-						i.putExtra("JSONdata", result);
-						startActivityForResult(i, 1);
-				    } else {
-				    	try {
-				    		ListView listView = (ListView) findViewById(R.id.listView1);
-				    		ArrayAdapter<String> nameArray;
-				    		nameArray = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1);
-							JSONArray ary = json.getJSONArray("movies");
-							for (int tmp = 0; tmp < ary.length(); tmp++) {
-								JSONObject object = ary.getJSONObject(tmp);
-								String str = object.getString("title") + "  (" + object.getString("year") + ")";
-								nameArray.add(str);
-							}
-							listView.setAdapter(nameArray);
-
-						} catch (JSONException e) {
-							Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
-						}
-					}
-					_result = result;
-					
-				}
-			} catch (JSONException e) {
-				Log.e("JSON", "JSON OBJECT EXCEPTION");
-			}
-    	}
-    }
+//    private class MovieRequest extends AsyncTask<URL, Void, String> {
+//    	protected String doInBackground(URL... urls) {
+//    		String response = "";
+//    		for (URL url: urls) {
+//				response = WebStuff.APICall(url);
+//			}
+//    		return response;
+//    	};
+//    
+//    	@Override
+//    	protected void onPostExecute(String result) {
+//    		try {
+//    			JSONObject json = new JSONObject(result);
+//    			if (json.getString("total").compareTo("0")==0) {
+//					Toast toast = Toast.makeText(_context, "Invalid Movie", Toast.LENGTH_SHORT);
+//					toast.setGravity(Gravity.TOP, 0, 70);
+//					toast.show();
+//				} else {
+//					SecondFragment viewer = (SecondFragment) getFragmentManager().findFragmentById(R.id.secondFragment);
+//				    if (viewer == null || !viewer.isInLayout()) {
+//				    	//open SecondView and pass along the JSONdata
+//						Intent i = new Intent(_context, SecondView.class);
+//						i.putExtra("JSONdata", result);
+//						startActivityForResult(i, 1);
+//				    } else {
+//				    	try {
+//				    		ListView listView = (ListView) findViewById(R.id.listView1);
+//				    		ArrayAdapter<String> nameArray;
+//				    		nameArray = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1);
+//							JSONArray ary = json.getJSONArray("movies");
+//							for (int tmp = 0; tmp < ary.length(); tmp++) {
+//								JSONObject object = ary.getJSONObject(tmp);
+//								String str = object.getString("title") + "  (" + object.getString("year") + ")";
+//								nameArray.add(str);
+//							}
+//							listView.setAdapter(nameArray);
+//
+//						} catch (JSONException e) {
+//							Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
+//						}
+//					}
+//					_result = result;
+//					
+//				}
+//			} catch (JSONException e) {
+//				Log.e("JSON", "JSON OBJECT EXCEPTION");
+//			}
+//    	}
+//    }
     
-    //  need to take the guts from post execute and activityResult?  block the startActivityResult as well
-    //private void displayAndSave
     
     //get the Intent data back from SecondView and use it to display the chosen movie and save it to recents
     @Override
@@ -207,6 +214,54 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     // q9gq656wf8xzsacnfza7ndtm rotten tomatoes API key
 
     
+    //IntentService broadcast receiver.  gets the JSON processed in WebService.java
+    public class ResponseReceiver extends BroadcastReceiver {
+    	public static final String ACTION_RESPONSE = "com.valleskeyp.intent.action.ACTION_RESPONSE";
+    	
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			String result = intent.getStringExtra(WebService.MOVIE_RESULT);
+			
+			try {
+    			JSONObject json = new JSONObject(result);
+    			if (json.getString("total").compareTo("0")==0) {
+					Toast toast = Toast.makeText(_context, "Invalid Movie", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.TOP, 0, 70);
+					toast.show();
+				} else {
+					SecondFragment viewer = (SecondFragment) getFragmentManager().findFragmentById(R.id.secondFragment);
+				    if (viewer == null || !viewer.isInLayout()) {
+				    	//open SecondView and pass along the JSONdata
+						Intent i = new Intent(_context, SecondView.class);
+						i.putExtra("JSONdata", result);
+						startActivityForResult(i, 1);
+				    } else {
+				    	try {
+				    		ListView listView = (ListView) findViewById(R.id.listView1);
+				    		ArrayAdapter<String> nameArray;
+				    		nameArray = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1);
+							JSONArray ary = json.getJSONArray("movies");
+							for (int tmp = 0; tmp < ary.length(); tmp++) {
+								JSONObject object = ary.getJSONObject(tmp);
+								String str = object.getString("title") + "  (" + object.getString("year") + ")";
+								nameArray.add(str);
+							}
+							listView.setAdapter(nameArray);
+
+						} catch (JSONException e) {
+							Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
+						}
+					}
+					_result = result;
+					
+				}
+			} catch (JSONException e) {
+				Log.e("JSON", "JSON OBJECT EXCEPTION");
+			}
+		}
+		
+	}
+	
     
     // MainListener interface methods from the MainFragment
     
@@ -234,14 +289,17 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			Toast toast = Toast.makeText(_context, "Attempting to retrieve movie data", Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.TOP, 0, 70);
 			toast.show();
-			//have connection, now send API request
-			getMovie(searchedTitle.trim().replace(" ", "+"));
+			//have connection, now call the IntentService to run the connection to the web
+			//getMovie(searchedTitle.trim().replace(" ", "+"));
+			Intent intent = new Intent(MainActivity.this, WebService.class);
+			intent.putExtra(WebService.MOVIE_REQUEST, searchedTitle.trim().replace(" ", "+"));
+			startService(intent);
 		} else {
 			//no connection.
 			_textField.setText("Sorry, unable to search without a working connection.\n\rPlease connect and try again.");
 		}
 	}
-
+	
 	@Override
 	public void openWebIntent() {
 		//open movie website with implicit intent
@@ -272,6 +330,8 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			FileStuff.storeObjectFile(_context, "recent", _recent, false);
 			getAndUpdate();
 			
+			ListView listView = (ListView) findViewById(R.id.listView1);
+			listView.setAdapter(null);
 		} catch (JSONException e) {
 			Log.e("JSON", "JSON OBJECT EXCEPTION");
 		}
