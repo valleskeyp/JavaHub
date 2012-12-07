@@ -54,7 +54,7 @@ public class WebService extends IntentService {
 	      e.printStackTrace();
 	    }
 	    String movieResult = builder.toString();
-	    
+
 	    //broadcast here
 	    Intent broadcastIntent = new Intent();
 	    broadcastIntent.setAction(ResponseReceiver.ACTION_RESPONSE);

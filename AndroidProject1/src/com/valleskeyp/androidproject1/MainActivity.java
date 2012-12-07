@@ -60,7 +60,7 @@ public class MainActivity extends Activity implements MainListener, SecondListen
         
         _movieTitle = "";
         _context = this;
-        getAndUpdate();
+        getAndUpdate(); // MovieProvider will replace
                 
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
@@ -86,17 +86,14 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     }
     
     @SuppressWarnings("unchecked")
-	private HashMap<String, String> getRecents() {
-    	Object stored = FileStuff.ReadObjectFile(_context, "recent", false);
-    	
-    	HashMap<String, String> recents;
-    	if (stored == null) {
+	private void getRecents() {
+    	Object content = FileStuff.ReadObjectFile(_context, "recent", false);
+		if (content == null) {
 			Log.i("RECENTS", "NO RECENTS FOUND");
-			recents = new HashMap<String, String>();
+			_recent = new HashMap<String, String>();
 		} else {
-			recents = (HashMap<String, String>) stored;
+			_recent = (HashMap<String, String>) content;
 		}
-    	return recents;
     }
     
     //makes sure that whenever the _recent list gets updated, the spinner updates as well
@@ -105,72 +102,11 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     		_recentTitle.clear();
 		}
     	_recentTitle.add("View recent movies.");
-    	_recent = getRecents();
+    	getRecents();
+    	
     	updateRecents();
     }
-//    private void getMovie(String name) {
-//    	String rtURL = "http://api.rottentomatoes.com/api/public/v1.0/movies.json?apikey=q9gq656wf8xzsacnfza7ndtm&q="+name;
-//    	URL finalURL;
-//    	try {
-//			finalURL = new URL(rtURL);
-//			MovieRequest mq = new MovieRequest();
-//			mq.execute(finalURL);
-//		} catch (MalformedURLException e) {
-//			Log.e("BAD URL", "MALFORMED URL");
-//			finalURL = null;
-//		}
-//    }
-    
-//    private class MovieRequest extends AsyncTask<URL, Void, String> {
-//    	protected String doInBackground(URL... urls) {
-//    		String response = "";
-//    		for (URL url: urls) {
-//				response = WebStuff.APICall(url);
-//			}
-//    		return response;
-//    	};
-//    
-//    	@Override
-//    	protected void onPostExecute(String result) {
-//    		try {
-//    			JSONObject json = new JSONObject(result);
-//    			if (json.getString("total").compareTo("0")==0) {
-//					Toast toast = Toast.makeText(_context, "Invalid Movie", Toast.LENGTH_SHORT);
-//					toast.setGravity(Gravity.TOP, 0, 70);
-//					toast.show();
-//				} else {
-//					SecondFragment viewer = (SecondFragment) getFragmentManager().findFragmentById(R.id.secondFragment);
-//				    if (viewer == null || !viewer.isInLayout()) {
-//				    	//open SecondView and pass along the JSONdata
-//						Intent i = new Intent(_context, SecondView.class);
-//						i.putExtra("JSONdata", result);
-//						startActivityForResult(i, 1);
-//				    } else {
-//				    	try {
-//				    		ListView listView = (ListView) findViewById(R.id.listView1);
-//				    		ArrayAdapter<String> nameArray;
-//				    		nameArray = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1);
-//							JSONArray ary = json.getJSONArray("movies");
-//							for (int tmp = 0; tmp < ary.length(); tmp++) {
-//								JSONObject object = ary.getJSONObject(tmp);
-//								String str = object.getString("title") + "  (" + object.getString("year") + ")";
-//								nameArray.add(str);
-//							}
-//							listView.setAdapter(nameArray);
-//
-//						} catch (JSONException e) {
-//							Log.e("JSON", "JSON OBJECT EXCEPTION / NO DATA");
-//						}
-//					}
-//					_result = result;
-//					
-//				}
-//			} catch (JSONException e) {
-//				Log.e("JSON", "JSON OBJECT EXCEPTION");
-//			}
-//    	}
-//    }
-    
+
     
     //get the Intent data back from SecondView and use it to display the chosen movie and save it to recents
     @Override
@@ -189,11 +125,16 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 					JSONObject tmp = ary.getJSONObject(i);
 					if ((tmp.getString("title")).equalsIgnoreCase(title)) {
 						JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
+						
 						_movieTitle = movieObject.getString("title");
 		    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 		    			
 		    			_recent.put(movieObject.getString("title"), movieObject.toString());
-		    			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+		    			
+		    			// Save the movie in MovieProvider
+		    			Uri selectedMovie = Uri.parse("content://com.valleskeyp.AndroidProject1.provider/"+_movieTitle);
+		    			getContentResolver().update(selectedMovie, null, movieObject.toString(), null);
+		    			
 		    			getAndUpdate();
 					}
 				}
@@ -275,7 +216,6 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
 		}
-		
 	}
 
 	@Override
@@ -290,7 +230,6 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			toast.setGravity(Gravity.TOP, 0, 70);
 			toast.show();
 			//have connection, now call the IntentService to run the connection to the web
-			//getMovie(searchedTitle.trim().replace(" ", "+"));
 			Intent intent = new Intent(MainActivity.this, WebService.class);
 			intent.putExtra(WebService.MOVIE_REQUEST, searchedTitle.trim().replace(" ", "+"));
 			startService(intent);
@@ -303,12 +242,7 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 	@Override
 	public void openWebIntent() {
 		//open movie website with implicit intent
-		if (!(_movieTitle.equals(""))) {   // Ok.  So after more testing this new addition DOES work, it deletes all instances of 'the'.
-										   // Then when there is a 'the' deleted in the middle it leaves a '  ' double blank space.
-										   // I then convert that to ' the ' to restore the middle instances.  BUT, now I have encountered another
-										   // problem in that certain movies are even more problematic.  if movies have the same name, the movie title
-										   // must be prepended with the movie's ID number and a '-'...  I am pleased with my logic at this point and
-										   // will not pursue it any further I think.
+		if (!(_movieTitle.equals(""))) {
 			String str = _movieTitle.replace("The", "").trim().replace("  ", " the ").replace(" ", "_");
 			Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
 			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
@@ -324,10 +258,15 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 
 			JSONObject movieObject = json.getJSONArray("movies").getJSONObject(position);
 			_movieTitle = movieObject.getString("title");
+			
 			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 
 			_recent.put(movieObject.getString("title"), movieObject.toString());
-			FileStuff.storeObjectFile(_context, "recent", _recent, false);
+			
+			// Save the movie in MovieProvider
+			Uri selectedMovie = Uri.parse("content://com.valleskeyp.AndroidProject1.provider/"+_movieTitle);
+			getContentResolver().update(selectedMovie, null, movieObject.toString(), null);
+			
 			getAndUpdate();
 			
 			ListView listView = (ListView) findViewById(R.id.listView1);
