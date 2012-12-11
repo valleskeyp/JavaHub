@@ -1,5 +1,7 @@
 package com.valleskeyp.androidproject1;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -7,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.novoda.imageloader.core.util.DirectLoader;
 import com.valleskeyp.androidproject1.MainFragment.MainListener;
 import com.valleskeyp.androidproject1.SecondFragment.SecondListener;
 import com.valleskeyp.lib.FileStuff;
@@ -14,17 +17,22 @@ import com.valleskeyp.lib.WebService;
 import com.valleskeyp.lib.WebStuff;
 
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -46,12 +54,21 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 	Spinner _recentsList;
 	ArrayList<String> _recentTitle = new ArrayList<String>();
 	
+	private Animation fadeInAnimation;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
+    	try {
         super.onCreate(savedInstanceState);
         setTheme(android.R.style.Theme_Black);
-        
         setContentView(R.layout.main_fragment);
+        
+      //Get elements from XML Layouts
+        _textField = (TextView) findViewById(R.id.text_view);
+        _recentsList = (Spinner) findViewById(R.id.recents_list);
+        _imageButton = (ImageButton) findViewById(R.id.imageButton1);
+
+        fadeInAnimation = AnimationUtils.loadAnimation(this, R.animator.fade_in);
         
         IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESPONSE);
         filter.addCategory(Intent.CATEGORY_DEFAULT);
@@ -65,17 +82,16 @@ public class MainActivity extends Activity implements MainListener, SecondListen
         LinearLayout ll = new LinearLayout(this);
         ll.setOrientation(LinearLayout.VERTICAL);
         
-        //Get elements from XML Layouts
-        _textField = (TextView) findViewById(R.id.text_view);
-        _recentsList = (Spinner) findViewById(R.id.recents_list);
-        _imageButton = (ImageButton) findViewById(R.id.imageButton1);
-
-        
         //setup recents list
         ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
-        listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         _recentsList.setAdapter(listAdapter);
+        Log.i("TESTING", listAdapter.toString());
+        listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+    } catch (Exception e) {
+    	Log.e("Error", "Android Exception", e);
     }
+    }
+    
     
     private void updateRecents() {
     	//_recentTitle
@@ -111,7 +127,6 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     //get the Intent data back from SecondView and use it to display the chosen movie and save it to recents
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    	// TODO Auto-generated method stub
     	super.onActivityResult(requestCode, resultCode, data);
     	if (resultCode == RESULT_OK) {
     		//"title" of chosen movie, "result" of json data to parse below
@@ -130,6 +145,11 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 		    			
 		    			_recent.put(movieObject.getString("title"), movieObject.toString());
+		    			
+		    			//load the movie poster
+		    			JSONObject tmp2 = movieObject.getJSONObject("posters");
+		    			String poster = tmp2.getString("detailed");
+		    			getImage(poster);
 		    			
 		    			// Save the movie in MovieProvider
 		    			Uri selectedMovie = Uri.parse("content://com.valleskeyp.AndroidProject1.provider/"+_movieTitle);
@@ -212,6 +232,12 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		try {
 			JSONObject json = new JSONObject(movieString);
 			_movieTitle = json.getString("title");
+			
+			//load the movie poster
+			JSONObject tmp = json.getJSONObject("posters");
+			String poster = tmp.getString("detailed");
+			getImage(poster);
+			
 			_textField.setText("\r\nTitle: " + json.getString("title") + "\r\n\r\nRating: " + json.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + json.getString("critics_consensus") + "\r\n\r\nSynopsis: " + json.getString("synopsis"));
 			} catch (JSONException e) {
 				Log.e("JSON", "JSON OBJECT EXCEPTION");
@@ -263,6 +289,11 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 
 			_recent.put(movieObject.getString("title"), movieObject.toString());
 			
+			//load the movie poster
+			JSONObject tmp = movieObject.getJSONObject("posters");
+			String poster = tmp.getString("detailed");
+			getImage(poster);
+			
 			// Save the movie in MovieProvider
 			Uri selectedMovie = Uri.parse("content://com.valleskeyp.AndroidProject1.provider/"+_movieTitle);
 			getContentResolver().update(selectedMovie, null, movieObject.toString(), null);
@@ -275,4 +306,44 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 			Log.e("JSON", "JSON OBJECT EXCEPTION");
 		}
 	}
+
+	// Methods to use ImageLoader library to download and display an image
+	// https://github.com/novoda/ImageLoader   Repository reference
+	
+	private void getImage(String name) {
+		String rtURL = name.toString();
+		URL finalURL;
+		try {
+			finalURL = new URL(rtURL);
+			ImageRequest iq = new ImageRequest();
+			iq.execute(finalURL);
+		} catch (MalformedURLException e) {
+			Log.e("BAD URL", "MALFORMED URL");
+			finalURL = null;
+		}
+	}
+
+	private class ImageRequest extends AsyncTask<URL, Void, Bitmap> {
+
+        @Override
+        protected Bitmap doInBackground(URL... urls) {
+        	DirectLoader dl = new DirectLoader();
+        	Bitmap b = null;
+        	for (URL url: urls) {
+        		String tmp = url.toString();
+        		b = dl.download(tmp);
+        	}
+			return b;
+        }      
+
+        @Override
+        protected void onPostExecute(Bitmap result) {
+        	if (result != null) { 
+        		ImageView poster = (ImageView) findViewById(R.id.poster);
+        		poster.setImageBitmap(result);
+        		poster.startAnimation(fadeInAnimation);
+			}
+        	
+        }
+  }
 }

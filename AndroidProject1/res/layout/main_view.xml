@@ -27,16 +27,26 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.0" >
+        android:layout_weight="1.0"
+        tools:ignore="UseCompoundDrawables" >
 
         <TextView
             android:id="@+id/text_view"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
-            android:layout_weight="1.0"
+            android:layout_weight="0.7"
             android:text="View Movie Information Here"
             tools:ignore="NestedWeights" />
-    </LinearLayout>
+
+        <ImageView
+            android:id="@+id/poster"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:src="@android:color/transparent"
+            android:contentDescription="Poster for the searched movie."/>
+        
+     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
