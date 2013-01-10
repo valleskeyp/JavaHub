@@ -1,0 +1,54 @@
+package com.valleskeyp.web.viewer;
+
+import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.view.Menu;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+
+@SuppressLint("SetJavaScriptEnabled")
+public class MainActivity extends Activity {
+
+	WebView _webView;
+	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        
+        WebViewClient yourWebClient = new WebViewClient()
+        {
+            // only allow rottentomatoes webpages
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView  view, String  url)
+            {
+             if ( url.contains("rottentomatoes") == true )
+                // don't override URL Link
+                return false;
+              
+             // Return true to override url loading
+             return true;
+            }
+        };
+        
+        
+        // get webview
+        _webView = (WebView) findViewById( R.id.webView ); 
+        _webView.getSettings().setJavaScriptEnabled(true);   
+        _webView.getSettings().setSupportZoom(true);      
+        _webView.getSettings().setBuiltInZoomControls(true);
+        _webView.setWebViewClient(yourWebClient);
+         
+        // Load URL from intent
+        
+        _webView.loadUrl("http://www.firstdroid.com/advertisement.htm");
+        
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+}
