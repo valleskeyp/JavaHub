@@ -35,7 +35,7 @@ public class RottenWeb extends Activity implements SensorEventListener{
             @Override
             public boolean shouldOverrideUrlLoading(WebView  view, String  url)
             {
-             if ( url.contains("rottentomatoes") == true )
+             if ( url.contains("rottentomatoes") | url.contains("videodetective") == true )
                 // don't override URL Link
                 return false;
               

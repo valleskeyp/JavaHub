@@ -69,6 +69,7 @@ public class RottenWeb extends Activity implements SensorEventListener{
         _sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         _updated = System.currentTimeMillis();
     }
+
     @Override
     public void onBackPressed() {
         WebView webView1 = (WebView) findViewById(R.id.webView);
@@ -82,31 +83,15 @@ public class RottenWeb extends Activity implements SensorEventListener{
     }
     
     @Override
-    protected void onResume() {
-    	super.onResume();
-    	// Allow class to listen to the accelerometer when app starts
-    	_sensorManager.registerListener(this, _sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
-    }
-    
-    @Override
-    protected void onPause() {
-    	super.onPause();
-    	// Stop listening to the accelerometer when app is not in use
-    	_sensorManager.unregisterListener(this);
-    }
-    
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
 
- // Code to act on accelerometer changes
-    
 	@Override
-	public void onAccuracyChanged(Sensor sensor, int accuracy) 
-	{
-		// Do nothing	
+	public void onAccuracyChanged(Sensor sensor, int accuracy) {
+		// Do nothing
+		
 	}
 
 	@Override
@@ -129,7 +114,7 @@ public class RottenWeb extends Activity implements SensorEventListener{
 		float accelationSquareRoot = (x * x + y * y + z * z)
 				/ (SensorManager.GRAVITY_EARTH * SensorManager.GRAVITY_EARTH);
 		long actualTime = System.currentTimeMillis();
-		if (accelationSquareRoot >= 3) //
+		if (accelationSquareRoot >= 2) //
 		{
 			if (actualTime - _updated < 200) {
 				return;
@@ -139,7 +124,7 @@ public class RottenWeb extends Activity implements SensorEventListener{
 			
 			if (orientation == 1) {
 				// currently portrait, change to landscape
-				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE	);
+				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 			} else {
 				// currently landscape, change to portrait
 				setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
