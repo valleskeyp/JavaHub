@@ -15,19 +15,15 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.graphics.PixelFormat;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.Menu;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.MediaController;
-import android.widget.VideoView;
+
 
 @SuppressLint("SetJavaScriptEnabled")
 public class RottenWeb extends Activity implements SensorEventListener {

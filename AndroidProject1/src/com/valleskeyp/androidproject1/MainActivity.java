@@ -28,6 +28,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
@@ -35,6 +37,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ShareActionProvider;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 	String _movieTitle;
 	ImageButton _imageButton;
 	String _result;
+	ShareActionProvider _provider;
 	
 	HashMap<String, String> _recent = new HashMap<String, String>();
 	Spinner _recentsList;
@@ -59,41 +63,96 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	try {
-        super.onCreate(savedInstanceState);
-        setTheme(android.R.style.Theme_Black);
-        setContentView(R.layout.main_fragment);
-        
-      //Get elements from XML Layouts
-        _textField = (TextView) findViewById(R.id.text_view);
-        _recentsList = (Spinner) findViewById(R.id.recents_list);
-        _imageButton = (ImageButton) findViewById(R.id.imageButton1);
+    		super.onCreate(savedInstanceState);
+    		setContentView(R.layout.main_fragment);
+    		
+    		//Get elements from XML Layouts
+    		_textField = (TextView) findViewById(R.id.text_view);
+    		_recentsList = (Spinner) findViewById(R.id.recents_list);
 
-        fadeInAnimation = AnimationUtils.loadAnimation(this, R.animator.fade_in);
-        
-        IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESPONSE);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
-        receiver = new ResponseReceiver();
-        registerReceiver(receiver, filter);
-        
-        _movieTitle = "";
-        _context = this;
-        getAndUpdate(); // MovieProvider will replace
-                
-        LinearLayout ll = new LinearLayout(this);
-        ll.setOrientation(LinearLayout.VERTICAL);
-        
-        //setup recents list
-        ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
-        _recentsList.setAdapter(listAdapter);
-        Log.i("TESTING", listAdapter.toString());
-        listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-    } catch (Exception e) {
-    	Log.e("Error", "Android Exception", e);
+    		fadeInAnimation = AnimationUtils.loadAnimation(this, R.animator.fade_in);
+
+    		IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_RESPONSE);
+    		filter.addCategory(Intent.CATEGORY_DEFAULT);
+    		receiver = new ResponseReceiver();
+    		registerReceiver(receiver, filter);
+
+    		_movieTitle = "";
+    		_context = this;
+    		getAndUpdate(); // MovieProvider will replace
+
+    		LinearLayout ll = new LinearLayout(this);
+    		ll.setOrientation(LinearLayout.VERTICAL);
+
+    		//setup recents list
+    		ArrayAdapter<String> listAdapter = new ArrayAdapter<String>(_context, android.R.layout.simple_spinner_item, _recentTitle);
+    		_recentsList.setAdapter(listAdapter);
+    		Log.i("TESTING", listAdapter.toString());
+    		listAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+    	} catch (Exception e) {
+    		Log.e("Error", "Android Exception", e);
+    	}
     }
+    @Override
+    protected void onResume() {
+    	invalidateOptionsMenu();
+    	super.onResume();
     }
+    @Override
+	  public boolean onCreateOptionsMenu(Menu menu) {
+	    MenuInflater inflater = getMenuInflater();
+	    inflater.inflate(R.menu.mainmenu, menu);
+
+	    // sets up the ActionProvider
+	    _provider = (ShareActionProvider) menu.findItem(R.id.menu_share).getActionProvider();
+	    
+	    // Method creates the share intent
+	    shareMovie();
+
+	    return true;
+	  }
+
+	  @Override
+	  public boolean onOptionsItemSelected(MenuItem item) {
+		  switch (item.getItemId()) {
+		  case R.id.action_history:
+			  _recentsList.performClick();
+			  break;
+		  case R.id.menu_share:
+			  Toast.makeText(this, "Share selected", Toast.LENGTH_SHORT).show();
+			  break;
+		  case R.id.action_webview:
+			  if (!(_movieTitle.equals(""))) {
+					String str = _movieTitle.replace("The", "").trim().replace("  ", " the ").replace(" ", "_");
+					Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					startActivity(intent);
+				} else {
+					Toast.makeText(this, "Find a movie to view first.", Toast.LENGTH_SHORT).show();
+				}
+			  break;
+
+		  default:
+			  break;
+		  }
+
+	    return true;
+	  }
     
-    
-    private void updateRecents() {
+    private void shareMovie() {
+    	if (!_movieTitle.equals("")) {
+    		String str = _movieTitle.replace("The", "").trim().replace("  ", " the ").replace(" ", "_");
+    		//Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
+    		String str2 = "http://www.rottentomatoes.com/mobile/m/" + str + "/";
+    		// Populate the share intent with data
+    		Intent intent = new Intent(Intent.ACTION_SEND);
+    		intent.setType("text/plain");
+    		intent.putExtra(Intent.EXTRA_TEXT, str2);
+    		_provider.setShareIntent(intent);
+    	}
+	}
+
+	private void updateRecents() {
     	//_recentTitle
     	
     	for(String key : _recent.keySet()) {
@@ -142,10 +201,11 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 						JSONObject movieObject = json.getJSONArray("movies").getJSONObject(i);
 						
 						_movieTitle = movieObject.getString("title");
+						invalidateOptionsMenu();
+						//shareMovie();
 		    			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 		    			
 		    			_recent.put(movieObject.getString("title"), movieObject.toString());
-// TODO show in review video		    			
 		    			//load the movie poster
 		    			JSONObject tmp2 = movieObject.getJSONObject("posters");
 		    			String poster = tmp2.getString("detailed");
@@ -167,11 +227,6 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		}
     }
     
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main, menu);
-        return true;
-    }
     // q9gq656wf8xzsacnfza7ndtm rotten tomatoes API key
 
     
@@ -231,8 +286,13 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		String movieString = _recent.get(recentTitle);
 		try {
 			JSONObject json = new JSONObject(movieString);
-			_movieTitle = json.getString("title");
-// TODO show in review video			
+			if (!_movieTitle.equals(json.getString("title"))) {
+				_movieTitle = json.getString("title");
+				invalidateOptionsMenu();
+				//shareMovie();
+			} else {
+				_movieTitle = json.getString("title");
+			}
 			//load the movie poster
 			JSONObject tmp = json.getJSONObject("posters");
 			String poster = tmp.getString("detailed");
@@ -265,17 +325,6 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		}
 	}
 	
-	@Override
-	public void openWebIntent() {
-		//open movie website with implicit intent
-		if (!(_movieTitle.equals(""))) {
-			String str = _movieTitle.replace("The", "").trim().replace("  ", " the ").replace(" ", "_");
-			Uri uri = Uri.parse("http://www.rottentomatoes.com/mobile/m/" + str + "/");
-			Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-			startActivity(intent);
-		}
-	}
-	
 	// SecondListener interface method from SecondFragment
 	@Override
 	public void onListClick(int position) {
@@ -284,11 +333,12 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 
 			JSONObject movieObject = json.getJSONArray("movies").getJSONObject(position);
 			_movieTitle = movieObject.getString("title");
+			invalidateOptionsMenu();
+			//shareMovie();
 			
 			_textField.setText("\r\nTitle: " + movieObject.getString("title") + "\r\n\r\nRating: " + movieObject.getString("mpaa_rating") + "\r\n\r\nCritics Consensus: " + movieObject.getString("critics_consensus") + "\r\n\r\nSynopsis: " + movieObject.getString("synopsis"));
 
 			_recent.put(movieObject.getString("title"), movieObject.toString());
-// TODO show in review video.
 			//load the movie poster
 			JSONObject tmp = movieObject.getJSONObject("posters");
 			String poster = tmp.getString("detailed");

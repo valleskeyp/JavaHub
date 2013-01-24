@@ -115,6 +115,5 @@ public class MovieProvider extends ContentProvider {
 			return 0;
 		}
 		
-	}
-
+	} 
 }

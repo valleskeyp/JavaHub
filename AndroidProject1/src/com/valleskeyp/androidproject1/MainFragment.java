@@ -3,7 +3,6 @@ package com.valleskeyp.androidproject1;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -14,7 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -27,7 +25,6 @@ public class MainFragment extends Fragment {
 	public interface MainListener {
 		public void onRecentSelect(String recentTitle);
 		public void onSearchGo(String searchedTitle);
-		public void openWebIntent();
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -40,8 +37,8 @@ public class MainFragment extends Fragment {
         Button fieldButton = (Button) view.findViewById(R.id.edit_button);
         TextView _textField = (TextView) view.findViewById(R.id.text_view);
         Spinner _recentsList = (Spinner) view.findViewById(R.id.recents_list);
-        ImageButton _imageButton = (ImageButton) view.findViewById(R.id.imageButton1);
-        _imageButton.setBackgroundColor(Color.BLACK);
+        _recentsList.setVisibility(View.INVISIBLE);
+
         
         //setup scrolling on textview
         _textField.setMovementMethod(new ScrollingMovementMethod());
@@ -80,17 +77,6 @@ public class MainFragment extends Fragment {
 				listener.onSearchGo(str);
 			}
 		});
-        
-        //implicit intent imageButton listener
-        _imageButton.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				listener.openWebIntent();
-			}
-		});
-
-
 		
 		return view;
 	};

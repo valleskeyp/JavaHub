@@ -26,7 +26,6 @@ public class SecondView extends Activity implements SecondListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		setTheme(android.R.style.Theme_Black);
 		setContentView(R.layout.second_fragment);
 
 		_context = this;
