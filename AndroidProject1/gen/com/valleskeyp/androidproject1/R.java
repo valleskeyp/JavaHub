@@ -16,25 +16,31 @@ public final class R {
     public static final class drawable {
         public static final int ic_action_search=0x7f020000;
         public static final int ic_launcher=0x7f020001;
-        public static final int rotten_tomatoes_logo=0x7f020002;
-        public static final int temp_image=0x7f020003;
+        public static final int myshape=0x7f020002;
+        public static final int rotten_tomatoes_logo=0x7f020003;
+        public static final int search_icon=0x7f020004;
+        public static final int temp_image=0x7f020005;
     }
     public static final class id {
-        public static final int action_history=0x7f08000b;
-        public static final int action_settings=0x7f08000c;
-        public static final int action_webview=0x7f08000e;
-        public static final int edit_button=0x7f080005;
-        public static final int edit_field=0x7f080004;
-        public static final int listView1=0x7f08000a;
-        public static final int logoButton=0x7f080001;
-        public static final int logolayout=0x7f080000;
-        public static final int mainFragment=0x7f080002;
-        public static final int menu_share=0x7f08000d;
-        public static final int poster=0x7f080007;
-        public static final int recents_list=0x7f080008;
-        public static final int secondFragment=0x7f080003;
-        public static final int textView1=0x7f080009;
-        public static final int text_view=0x7f080006;
+        public static final int action_history=0x7f09000f;
+        public static final int action_settings=0x7f090010;
+        public static final int action_webview=0x7f090012;
+        public static final int edit_button=0x7f090005;
+        public static final int edit_field=0x7f090004;
+        public static final int listView1=0x7f09000a;
+        public static final int logoButton=0x7f090001;
+        public static final int logolayout=0x7f090000;
+        public static final int mainFragment=0x7f090002;
+        public static final int menu_share=0x7f090011;
+        public static final int poster=0x7f090007;
+        public static final int recentContent=0x7f09000c;
+        public static final int recentTitle=0x7f09000b;
+        public static final int recents_list=0x7f090008;
+        public static final int searchGo=0x7f09000e;
+        public static final int searchText=0x7f09000d;
+        public static final int secondFragment=0x7f090003;
+        public static final int textView1=0x7f090009;
+        public static final int text_view=0x7f090006;
     }
     public static final class layout {
         public static final int logoview=0x7f030000;
@@ -42,20 +48,26 @@ public final class R {
         public static final int main_view=0x7f030002;
         public static final int second=0x7f030003;
         public static final int second_fragment=0x7f030004;
+        public static final int widget_layout=0x7f030005;
+        public static final int widget_search=0x7f030006;
     }
     public static final class menu {
-        public static final int activity_main=0x7f070000;
-        public static final int mainmenu=0x7f070001;
+        public static final int activity_main=0x7f080000;
+        public static final int mainmenu=0x7f080001;
     }
     public static final class string {
-        public static final int app_name=0x7f050000;
-        public static final int hello_world=0x7f050001;
-        public static final int menu_settings=0x7f050002;
-        public static final int title_activity_main=0x7f050003;
+        public static final int app_name=0x7f060000;
+        public static final int hello_world=0x7f060001;
+        public static final int menu_settings=0x7f060002;
+        public static final int title_activity_main=0x7f060003;
     }
     public static final class style {
-        public static final int AppTheme=0x7f060000;
-        public static final int Theme_DarkTheme=0x7f060002;
-        public static final int Theme_LightTheme=0x7f060001;
+        public static final int AppTheme=0x7f070000;
+        public static final int Theme_DarkTheme=0x7f070002;
+        public static final int Theme_LightTheme=0x7f070001;
+        public static final int Theme_widgetSearchBG=0x7f070003;
+    }
+    public static final class xml {
+        public static final int movie_widget=0x7f050000;
     }
 }

@@ -1,0 +1,12 @@
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <style name="AppTheme" parent="android:Theme.Light">
+    </style>
+    
+    <style name="Theme.LightTheme" parent="android:Theme.Light">       
+    </style>
+	
+    <style name="Theme.DarkTheme" parent="android:Theme.Black">       
+    </style>
+
+</resources>

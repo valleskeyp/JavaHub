@@ -1,0 +1,9 @@
+package com.valleskeyp.androidproject1;
+
+public class WidgetSearch {
+
+	public WidgetSearch() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

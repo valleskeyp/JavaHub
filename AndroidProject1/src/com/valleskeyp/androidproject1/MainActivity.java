@@ -92,6 +92,17 @@ public class MainActivity extends Activity implements MainListener, SecondListen
     	} catch (Exception e) {
     		Log.e("Error", "Android Exception", e);
     	}
+    	
+    	try {
+    		Intent i = getIntent();
+    		String intentString = i.getStringExtra("WidgetSearch");
+    		if (!intentString.equals("")) {
+    			getIntent().removeExtra("WidgetSearch");
+				onSearchGo(intentString);
+			}
+		} catch (Exception e) {
+			Log.e("WIDGET", "WIDGET ERROR", e);
+		}
     }
     @Override
     protected void onResume() {
@@ -237,6 +248,7 @@ public class MainActivity extends Activity implements MainListener, SecondListen
 		@Override
 		public void onReceive(Context context, Intent intent) {
 			String result = intent.getStringExtra(WebService.MOVIE_RESULT);
+			
 			
 			try {
     			JSONObject json = new JSONObject(result);
