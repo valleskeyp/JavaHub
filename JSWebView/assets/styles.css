@@ -1,9 +1,8 @@
 @charset "UTF-8";
 /* CSS Document */
 
-html, body {
-    margin: 0;
-    width: 100%;
+html {
+    margin: 0;    
     height: 100%;
 }
 body {
@@ -18,7 +17,7 @@ body {
 	background: linear-gradient(to bottom, #cfe7fa 0%, #6393c1 100%); /* W3C */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cfe7fa', endColorstr='#6393c1', GradientType=0 ); /* IE6-9 */
 }
-form {
+#form {
 	padding:12px;
 	display: inline-block;
 	background: #fac695; /* Old browsers */
@@ -36,19 +35,22 @@ form {
 	-webkit-box-shadow: inset 0px 1px 0px 0px #9fb5ed;
 	box-shadow: inset 0px 1px 0px 0px #9fb5ed;
 }
-form div {
-	margin-bottom:8px;
+#form div {
+	margin-bottom:4px;
 }
 .txtground {
 	background-color: #f0f0f0;
-	border: 1px solid #dbdbdb;
+	border: 1px solid #808080;
 	padding: 5px;
 	-webkit-border-radius: 7px;
 	-moz-border-radius: 7px;
 	color: #000;
 	font-style: italic;
 	font-weight: bold;
-	width:140px;
+	width:100px;
+}
+#dateMonth, #dateDay {
+	width:35px;
 }
 .submit {
 	-moz-box-shadow: inset 0px 1px 0px 0px #9fb5ed;
@@ -71,10 +73,13 @@ form div {
 	text-shadow: 1px 1px 0px #000000;
 }
 #location, #description{
-	width:200px;
-	height:30px;
+	width:180px;
+	height:80px;
 	margin-bottom:8px;
 }
 h1 {
 	margin:6px 6px 6px 6px;
+}
+h1, h2, label {
+	text-shadow: 1px 1px 0px #FFFFFF;
 }

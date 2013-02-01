@@ -1,0 +1,54 @@
+package com.valleskeyp.jswebview;
+
+import android.os.Bundle;
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
+import android.view.Menu;
+import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.widget.Toast;
+
+public class MainActivity extends Activity {
+
+    @SuppressLint("SetJavaScriptEnabled")
+	@Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        WebView webview = (WebView) findViewById(R.id.webView);
+        webview.setScrollBarStyle(View.SCROLLBARS_INSIDE_OVERLAY);
+        WebSettings webSettings = webview.getSettings();
+        webSettings.setJavaScriptEnabled(true);
+        webview.loadUrl("file:///android_asset/index.html");
+        webview.addJavascriptInterface(new WebAppInterface(this), "Android");
+        
+    }
+
+    public class WebAppInterface {
+        Context mContext;
+
+        /** Instantiate the interface and set the context */
+        WebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        /* Javascript classes here */
+        public void showToast(String toast) {
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+        }
+        
+        public void getData(String title, Object date, String location, String description) {
+        	Toast.makeText(mContext, date.toString(), Toast.LENGTH_SHORT).show();
+        }
+        
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_main, menu);
+        return true;
+    }
+}
