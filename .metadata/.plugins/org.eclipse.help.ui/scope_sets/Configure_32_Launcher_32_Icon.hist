@@ -1,0 +1,5 @@
+#Thu Feb 07 10:45:05 PST 2013
+__DEFAULT__=false
+org.eclipse.sdk.Eclipse.master=true
+org.eclipse.help.ui.localSearch.master=true
+expression=Configure Launcher Icon

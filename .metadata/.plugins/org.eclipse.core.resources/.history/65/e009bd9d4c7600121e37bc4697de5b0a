@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <item android:id="@+id/menu_logout"
+        android:title="Logout"
+        android:orderInCategory="100"
+        android:showAsAction="never" />
+    
+    <item android:id="@+id/menu_search"
+          android:title="Search"
+          android:icon="@drawable/ic_action_search"
+          android:showAsAction="always"
+          android:actionViewClass="android.widget.SearchView" />
+    
+    <item android:id="@+id/menu_record"
+          android:title="Record"
+          android:showAsAction="always" />
+    
+    <item android:id="@+id/menu_upload"
+          android:title="Upload"
+          android:showAsAction="always" />
+    
+</menu>
