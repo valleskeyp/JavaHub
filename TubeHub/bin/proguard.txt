@@ -1,10 +1,10 @@
-# view AndroidManifest.xml #generated:37
+# view AndroidManifest.xml #generated:38
 -keep class com.valleskeyp.tubehub.EditActivity { <init>(...); }
 
 # view AndroidManifest.xml #generated:16
 -keep class com.valleskeyp.tubehub.Login_Activity { <init>(...); }
 
-# view AndroidManifest.xml #generated:26
+# view AndroidManifest.xml #generated:27
 -keep class com.valleskeyp.tubehub.MainActivity { <init>(...); }
 
 # onClick res/layout/main_list_view.xml #generated:31

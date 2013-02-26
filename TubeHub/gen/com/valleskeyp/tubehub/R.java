@@ -26,13 +26,13 @@ public final class R {
         public static final int editText1=0x7f080002;
         public static final int edit_button=0x7f080016;
         public static final int edit_submit=0x7f08000f;
-        public static final int expandableListView1=0x7f080014;
         public static final int geo_false=0x7f08000a;
         public static final int geo_input=0x7f080008;
         public static final int geo_true=0x7f080009;
         public static final int imageView1=0x7f080011;
         public static final int imageView2=0x7f080012;
         public static final int keyword_input=0x7f080006;
+        public static final int list_content=0x7f080014;
         public static final int menu_logout=0x7f080019;
         public static final int menu_record=0x7f08001b;
         public static final int menu_search=0x7f08001a;

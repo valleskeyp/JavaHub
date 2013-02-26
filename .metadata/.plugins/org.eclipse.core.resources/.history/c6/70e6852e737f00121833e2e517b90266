@@ -1,0 +1,9 @@
+package com.valleskeyp.tubehub;
+
+public class RequestData {
+
+	public RequestData() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

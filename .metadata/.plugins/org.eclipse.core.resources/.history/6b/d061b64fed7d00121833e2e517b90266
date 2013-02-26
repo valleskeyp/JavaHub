@@ -1,0 +1,9 @@
+package com.valleskeyp.tubehub;
+
+public class RefreshToken {
+
+	public RefreshToken() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
