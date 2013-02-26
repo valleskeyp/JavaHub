@@ -1,9 +1,0 @@
-package com.valleskeyp.tubehub;
-
-public class Main_activity {
-
-	public Main_activity() {
-		// TODO Auto-generated constructor stub
-	}
-
-}
