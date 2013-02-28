@@ -1,0 +1,20 @@
+package com.valleskeyp.tubehub;
+
+import android.app.IntentService;
+import android.content.Intent;
+
+public class UploadService extends IntentService {
+	public static final String PARAM_IN_MSG = "imsg";
+	public static final String PARAM_OUT_MSG = "omsg";
+	
+	public UploadService() {
+		super("UploadService");
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		String access_token = intent.getStringExtra(PARAM_IN_MSG);
+		
+	}
+
+}

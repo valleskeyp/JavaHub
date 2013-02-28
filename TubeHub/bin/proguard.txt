@@ -7,6 +7,10 @@
 # view AndroidManifest.xml #generated:27
 -keep class com.valleskeyp.tubehub.MainActivity { <init>(...); }
 
+# view AndroidManifest.xml #generated:47
+-keep class com.valleskeyp.tubehub.YouTubeService { <init>(...); }
+
 # onClick res/layout/main_list_view.xml #generated:31
+# onClick res/layout/main_list_view.xml #generated:41
 -keepclassmembers class * { *** dropdownMenuClick(...); }
 

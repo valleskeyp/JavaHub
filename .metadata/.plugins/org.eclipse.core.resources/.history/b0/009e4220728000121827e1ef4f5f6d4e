@@ -1,0 +1,22 @@
+package com.valleskeyp.tubehub;
+
+import android.app.IntentService;
+import android.content.Intent;
+
+public class YouTubeService extends IntentService {
+	public static final String PARAM_IN_MSG = "imsg";
+    public static final String PARAM_OUT_MSG = "omsg";
+	
+	
+	public YouTubeService() {
+		super("YouTubeService");
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		String refresh_token = intent.getStringExtra(PARAM_IN_MSG);
+		
+		
+	}
+
+}

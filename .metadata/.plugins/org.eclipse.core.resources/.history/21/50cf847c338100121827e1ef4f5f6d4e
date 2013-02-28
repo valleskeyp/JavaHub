@@ -1,0 +1,7 @@
+package com.valleskeyp.tubehub;
+
+import android.widget.ArrayAdapter;
+
+public class VideoListAdapter extends ArrayAdapter<T> {
+
+}

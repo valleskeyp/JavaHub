@@ -1,0 +1,9 @@
+package com.valleskeyp.tubehub;
+
+public class ListItem {
+
+	public ListItem() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
