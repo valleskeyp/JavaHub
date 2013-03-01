@@ -1,7 +1,5 @@
 package com.valleskeyp.tubehub;
 
-// Developer Key: AIzaSyBCJx9eFMjDT0CJZMj1tkHT0oY6o8DvU24
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.annotation.SuppressLint;

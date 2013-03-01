@@ -1,0 +1,11 @@
+package com.valleskeyp.tubehub;
+
+import android.app.DialogFragment;
+
+public class DeleteDialogFragment extends DialogFragment {
+
+	public DeleteDialogFragment() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

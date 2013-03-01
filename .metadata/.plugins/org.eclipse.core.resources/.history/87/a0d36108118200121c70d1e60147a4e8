@@ -1,0 +1,35 @@
+package com.valleskeyp.tubehub;
+
+import com.google.api.client.auth.oauth2.BearerToken;
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Video;
+
+import android.app.IntentService;
+import android.content.Intent;
+
+public class VideoInfoService extends IntentService {
+	
+	private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+	private static final JacksonFactory JSON_FACTORY = new JacksonFactory();
+	private static YouTube youtube;
+	
+	public VideoInfoService() {
+		super("VideoInfoService");
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		String accessToken = intent.getStringExtra("accessToken");
+		
+		Credential credential = new Credential(BearerToken.authorizationHeaderAccessMethod()).setAccessToken(accessToken);
+		youtube = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName("TubeHub").build();
+		
+		Video videoObjectDefiningMetadata = new Video();
+
+	}
+
+}

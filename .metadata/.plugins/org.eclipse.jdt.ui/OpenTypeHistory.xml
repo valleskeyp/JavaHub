@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <typeInfoHistroy>
 <typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.app(Fragment.class[Fragment" modifiers="1" timestamp="1360895104000"/>
-<typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.app(IntentService.class[IntentService" modifiers="1025" timestamp="1360895104000"/>
 <typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.content(ContentProvider.class[ContentProvider" modifiers="1025" timestamp="1360895104000"/>
 <typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.appwidget(AppWidgetProvider.class[AppWidgetProvider" modifiers="1" timestamp="1360895104000"/>
 <typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.app(Activity.class[Activity" modifiers="1" timestamp="1360895104000"/>
 <typeInfo handle="=TubeHub/\/Users\/petervalleskey\/github\/JavaHub\/TubeHub\/libs\/google-oauth-client-1.12.0-beta.jar&lt;com.google.api.client.auth.oauth2(Credential.class[Credential" modifiers="33" timestamp="1361302213000"/>
 <typeInfo handle="=TubeHub/\/Users\/petervalleskey\/github\/JavaHub\/TubeHub\/libs\/android-support-v4.jar&lt;android.support.v4.app(DialogFragment.class[DialogFragment" modifiers="33" timestamp="1360773982000"/>
 <typeInfo handle="=TubeHub/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.app(DialogFragment.class[DialogFragment" modifiers="33" timestamp="1360895104000"/>
+<typeInfo handle="=TubeHub/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.widget(ArrayAdapter.class[ArrayAdapter" modifiers="33" timestamp="1360895104000"/>
+<typeInfo handle="=AndroidProject1/\/Users\/petervalleskey\/Documents\/android-sdk-macosx\/platforms\/android-16\/android.jar&lt;android.app(IntentService.class[IntentService" modifiers="1025" timestamp="1360895104000"/>
 </typeInfoHistroy>

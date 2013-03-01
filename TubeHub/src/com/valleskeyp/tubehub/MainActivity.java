@@ -1,11 +1,9 @@
 package com.valleskeyp.tubehub;
 
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -18,9 +16,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity {
 	String _refresh_token;
 	ListView _listView;
 	SharedPreferences _pref;
+	ArrayList<String> _titles = new ArrayList<String>();
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,17 +52,17 @@ public class MainActivity extends Activity {
         _refresh_token = _pref.getString("refresh_token", null);
 
         _listView = (ListView) this.findViewById(R.id.list_content);
-        Button submitButton = (Button) this.findViewById(R.id.temp_button);
+        
         ImageButton searchButton = (ImageButton) this.findViewById(R.id.search);
         Button uploadButton = (Button) this.findViewById(R.id.upload_button);
+        Button recordButton = (Button) this.findViewById(R.id.record_button);
         
-		submitButton.setOnClickListener(new View.OnClickListener() {
+        recordButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
-				Intent i = new Intent(_context, EditActivity.class);
-				
-				startActivityForResult(i, 1);
+				Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+			    startActivityForResult(takeVideoIntent, 100);
 				
 			}
 		});
@@ -83,9 +85,19 @@ public class MainActivity extends Activity {
 			}
 		});
 		
+		_listView.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				
+				Intent msgIntent = new Intent(MainActivity.this, EditActivity.class);
+				msgIntent.putExtra("accessToken", _access_token);
+				msgIntent.putExtra("id", _titles.get(position));
+				Log.i("CLICK",_titles.get(position));
+				startActivity(msgIntent);
+			}
+		});
     }
-    
-    
     
     // Logout Functionality
     
@@ -130,32 +142,22 @@ public class MainActivity extends Activity {
     	if (resultCode == RESULT_OK) {
     		if (requestCode == 22) {
     			Uri selectedVideoUri = data.getData();
-
-    			//MEDIA GALLERY
     			String selectedVideoPath = getPath(selectedVideoUri);
-    			//just to display the imagepath
     			
-    			Intent msgIntent = new Intent(MainActivity.this, UploadService.class);
-				msgIntent.putExtra(UploadService.PARAM_IN_MSG, _access_token);
+    			Intent msgIntent = new Intent(MainActivity.this, EditActivity.class);
+				msgIntent.putExtra("accessToken", _access_token);
 				msgIntent.putExtra("path", selectedVideoPath);
-				startService(msgIntent);
+				startActivity(msgIntent);
 
     		}
     	}
     }
     
     public String getPath(Uri uri) {
-    	String[] projection = { MediaStore.Images.Media.DATA };
-    	@SuppressWarnings("deprecation")
-		Cursor cursor = managedQuery(uri, projection, null, null, null);
-    	if(cursor!=null)
-    	{
-    		int column_index = cursor
-    				.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-    		cursor.moveToFirst();
-    		return cursor.getString(column_index);
-    	}
-    	else return null;
+    	Cursor cursor = getContentResolver().query(uri, null, null, null, null); 
+    	cursor.moveToFirst(); 
+    	int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
+    	return cursor.getString(idx);
     }
     		
     public class ResponseReceiver extends BroadcastReceiver {
@@ -177,22 +179,29 @@ public class MainActivity extends Activity {
 					JSONArray videos = json.getJSONArray("items");
 					for (int i = 0; i < videos.length(); i++) {
 						JSONObject videoJSON = videos.getJSONObject(i);
-						//					Log.i("VIDEO_WHOLE_INFO", videoJSON.toString());
-						//					Log.i("VIDEO_NAME", videoJSON.getJSONObject("snippet").getString("title"));
-						//					Log.i("VIDEO_NAME", videoJSON.getJSONObject("snippet").getJSONObject("resourceId").getString("videoId"));
+						//Log.i("VIDEO_WHOLE_INFO", videoJSON.toString());
+						//Log.i("VIDEO_NAME", videoJSON.getJSONObject("snippet").getString("title"));
+						//Log.i("VIDEO_ID", videoJSON.getJSONObject("snippet").getJSONObject("resourceId").getString("videoId"));
 
-
+						_titles.add(videoJSON.getJSONObject("snippet").getJSONObject("resourceId").getString("videoId"));
 						videoListView.add(videoJSON.getJSONObject("snippet").getString("title"));
 					}
 					ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, videoListView);
 					_listView.setAdapter(adapter);
 
-
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			} else if (intent.getAction().equals(ACTION_RESPONSE)) {
-				
+				if (intent.getBooleanExtra(UploadService.PARAM_OUT_MSG, false)) {
+					Toast msg = Toast.makeText(MainActivity.this, "Video uploaded.", Toast.LENGTH_LONG);
+					msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+					msg.show();
+				} else {
+					Toast msg = Toast.makeText(MainActivity.this, "Video did not upload.", Toast.LENGTH_LONG);
+					msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+					msg.show();
+				}
 			}
 		}
     	
@@ -206,7 +215,7 @@ public class MainActivity extends Activity {
         registerReceiver(receiver, filter);
         
         IntentFilter updateFilter = new IntentFilter(ResponseReceiver.ACTION_UPLOAD);
-        filter.addCategory(Intent.CATEGORY_DEFAULT);
+        updateFilter.addCategory(Intent.CATEGORY_DEFAULT);
         receiver2 = new ResponseReceiver();
         registerReceiver(receiver2, updateFilter);
         

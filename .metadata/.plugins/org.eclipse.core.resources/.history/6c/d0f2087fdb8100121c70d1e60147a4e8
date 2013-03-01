@@ -1,0 +1,60 @@
+package com.valleskeyp.tubehub;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.Intent;
+import android.view.Menu;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+
+public class EditActivity extends Activity {
+
+	String _path;
+	String _accessToken;
+	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.edit_activity);
+        
+        EditText title = (EditText) this.findViewById(R.id.edit_title);
+        EditText description = (EditText) this.findViewById(R.id.edit_description);
+        EditText keywords = (EditText) this.findViewById(R.id.edit_keywords);
+        Spinner category = (Spinner) this.findViewById(R.id.edit_category);
+        
+        RadioButton geolocation = (RadioButton) this.findViewById(R.id.edit_geo_false);
+        RadioButton privateVideo = (RadioButton) this.findViewById(R.id.edit_private_false);
+        
+        Button deleteButton = (Button) this.findViewById(R.id.edit_delete);
+        Button submitButton = (Button) this.findViewById(R.id.edit_submit);
+        
+        Intent intent = getIntent();
+        if (intent.getStringExtra("path") != null) {
+        	// User has entered view to upload a new video to YouTube
+			_path = intent.getStringExtra("path");
+			_accessToken = intent.getStringExtra("accessToken");
+		} else {
+			// User has entered view to edit a video
+			// - parse video data, fill fields with data, retain video id for edit call
+			// - show a delete button by title?
+		}
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_edit, menu);
+        return true;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(resultCode)
+        {
+        case 999:
+            setResult(999);
+            finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+}

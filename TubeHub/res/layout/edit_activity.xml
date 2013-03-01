@@ -6,36 +6,56 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="0.5"
-        android:gravity="center_horizontal"
-        android:orientation="vertical" >
+        android:layout_height="48dp"
+        android:background="#aaaa" >
 
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_marginTop="8px"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enter Video Information"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:layout_height="wrap_content" >
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dip"
+                android:src="@drawable/ic_launcher" />
+
+            <TextView
+                android:id="@+id/textView0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dip"
+                android:text="Enter Video Information"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/edit_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="35dip"
+            android:layout_marginTop="9dip"
+            android:layout_marginLeft="20dip"
+            android:visibility="invisible"
+            android:text="Delete" />
+	    
+	</LinearLayout>
     
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:layout_marginTop="5dip"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:layout_weight="1" >
 
         <TextView
-            android:id="@+id/title_input"
+            android:id="@+id/text_view1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Title:" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/edit_title"
             android:ems="13"
             android:singleLine="true"
             android:layout_width="wrap_content"
@@ -51,13 +71,13 @@
         android:layout_weight="1" >
 
         <TextView
-            android:id="@+id/category_input"
+            android:id="@+id/text_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Category:" />
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/edit_category"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:entries="@array/categories"
@@ -73,41 +93,18 @@
         android:layout_weight="1" >
 
         <TextView
-            android:id="@+id/description_input"
+            android:id="@+id/text_view3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description:" />
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/edit_description"
             android:ems="13"
             android:singleLine="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:inputType="textCapSentences" />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:layout_weight="1" >
-
-        <TextView
-            android:id="@+id/keyword_input"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Keywords:" />
-
-        <EditText
-            android:id="@+id/editText1"
-            android:singleLine="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="13"
-            android:inputType="text" />
-
     </LinearLayout>
 	
     <LinearLayout
@@ -125,19 +122,19 @@
 
         <RadioGroup
             android:orientation="horizontal"
-            android:id="@+id/geo_input"
+            android:id="@+id/edit_geo_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <RadioButton
-                android:id="@+id/geo_true"
+                android:id="@+id/edit_geo_false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="No" />
 
             <RadioButton
-                android:id="@+id/geo_false"
+                android:id="@+id/edit_geo_true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yes" />
@@ -160,19 +157,19 @@
 
         <RadioGroup
             android:orientation="horizontal"
-            android:id="@+id/private_input"
+            android:id="@+id/edit_private_input"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 
             <RadioButton
-                android:id="@+id/private_true"
+                android:id="@+id/edit_private_false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:text="No" />
 
             <RadioButton
-                android:id="@+id/private_false"
+                android:id="@+id/edit_private_true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Yes" />

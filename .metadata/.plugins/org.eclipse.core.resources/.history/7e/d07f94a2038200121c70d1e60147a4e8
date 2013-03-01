@@ -1,0 +1,199 @@
+package com.valleskeyp.tubehub;
+
+import android.os.Bundle;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+public class EditActivity extends Activity {
+	private ResponseReceiver receiver;
+	String _path;
+	String _accessToken;
+	
+	EditText _title;
+	EditText _description;
+	Spinner _category;
+	RadioButton _geolocation;
+	RadioButton _privateVideo;
+	
+	GPSTracker gps;
+	
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.edit_activity);
+        
+        _title = (EditText) this.findViewById(R.id.edit_title);
+        _description = (EditText) this.findViewById(R.id.edit_description);
+        _category = (Spinner) this.findViewById(R.id.edit_category);
+        
+        _geolocation = (RadioButton) this.findViewById(R.id.edit_geo_true);
+        _privateVideo = (RadioButton) this.findViewById(R.id.edit_private_true);
+
+        Button deleteButton = (Button) this.findViewById(R.id.edit_delete);
+        Button submitButton = (Button) this.findViewById(R.id.edit_submit);
+        
+        Intent intent = getIntent();
+        _accessToken = intent.getStringExtra("accessToken");
+        if (intent.getStringExtra("path") != null) {
+        	// User has entered view to upload a new video to YouTube
+			_path = intent.getStringExtra("path");
+		} else {
+			String id = intent.getStringExtra("id");
+			// User has entered view to edit a video
+			// - parse video data, fill fields with data, retain video id for edit call
+			deleteButton.setVisibility(View.VISIBLE);
+			
+			Toast msg = Toast.makeText(EditActivity.this, "Retreiving video data", Toast.LENGTH_LONG);
+			msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+			msg.show();
+			
+			Intent msgIntent = new Intent(this, SingleVideoService.class);
+			msgIntent.putExtra("id", id);
+			msgIntent.putExtra("accessToken", _accessToken);
+			startService(msgIntent);
+			
+		}
+        
+        
+        submitButton.setOnClickListener(new View.OnClickListener() {
+			
+        	@Override
+        	public void onClick(View v) {
+        		// on submit, validate all of the fields.  if valid submit data to upload service
+        		gps = new GPSTracker(EditActivity.this);
+
+        		if (_geolocation.isChecked()) {
+        			if(gps.canGetLocation()){
+
+        				double latitude = gps.getLatitude();
+        				double longitude = gps.getLongitude();
+
+        				if (validation()) {
+
+        					Intent msgIntent = new Intent(EditActivity.this, UploadService.class);
+        					msgIntent.putExtra(UploadService.PARAM_IN_MSG, _accessToken);
+        					msgIntent.putExtra("refreshToken", refresh_token);
+        					msgIntent.putExtra("path", _path);
+        					msgIntent.putExtra("title", _title.getText().toString());
+        					msgIntent.putExtra("description", _description.getText().toString());
+        					msgIntent.putExtra("category", _category.getItemAtPosition(_category.getSelectedItemPosition()).toString());
+        					msgIntent.putExtra("geolocation", _geolocation.isChecked());
+        					msgIntent.putExtra("latitude", latitude);
+        					msgIntent.putExtra("longitude", longitude);
+        					msgIntent.putExtra("private", _privateVideo.isChecked());
+        					
+        					Toast msg = Toast.makeText(EditActivity.this, "Uploading", Toast.LENGTH_LONG);
+        					msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+        					msg.show();
+        					
+        					startService(msgIntent);
+        				}
+        			}else{
+        				gps.showSettingsAlert();
+        			}
+        		} else {
+        			if (validation()) {
+
+        				Intent msgIntent = new Intent(EditActivity.this, UploadService.class);
+        				msgIntent.putExtra(UploadService.PARAM_IN_MSG, _accessToken);
+        				msgIntent.putExtra("path", _path);
+        				msgIntent.putExtra("title", _title.getText().toString());
+        				msgIntent.putExtra("description", _description.getText().toString());
+        				msgIntent.putExtra("category", _category.getItemAtPosition(_category.getSelectedItemPosition()).toString());
+        				msgIntent.putExtra("geolocation", _geolocation.isChecked());
+        				msgIntent.putExtra("private", _privateVideo.isChecked());
+        				
+        				Toast msg = Toast.makeText(EditActivity.this, "Uploading", Toast.LENGTH_LONG);
+    					msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+    					msg.show();
+    					
+        				startService(msgIntent);
+        			}
+
+        		}
+        	}
+        });
+        
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// will sent delete request to youtube for video in editing - use ID or something
+				
+			}
+		});
+        
+        
+    }
+    
+    public boolean validation() {
+    	if (_title.getText().toString().length() < 1) {
+    		Toast msg = Toast.makeText(EditActivity.this, "Please enter a Title", Toast.LENGTH_LONG);
+			msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+			msg.show();
+    		return false;
+    	} else if (_description.getText().toString().length() < 1) {
+    		Toast msg = Toast.makeText(EditActivity.this, "Please enter a description", Toast.LENGTH_LONG);
+			msg.setGravity(Gravity.CENTER, msg.getXOffset() / 2, msg.getYOffset() / 2);
+			msg.show();
+    		return false;
+    	} else {
+    		return true;
+    	}
+    }
+    
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.activity_edit, menu);
+        return true;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch(resultCode)
+        {
+        case 999:
+            setResult(999);
+            finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+    
+    public class ResponseReceiver extends BroadcastReceiver {
+    	public static final String ACTION_SINGLE = "com.valleskeyp.intent.action.ACTION_SINGLE";
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if(intent.getAction().equals(ACTION_SINGLE)) {
+				String data = intent.getStringExtra("data");
+			}
+		}
+    }
+    
+    @Override
+    protected void onResume() {
+    	IntentFilter filter = new IntentFilter(ResponseReceiver.ACTION_SINGLE);
+    	filter.addCategory(Intent.CATEGORY_DEFAULT);
+    	receiver = new ResponseReceiver();
+    	registerReceiver(receiver, filter);
+    	
+    	super.onResume();
+    }
+    
+    @Override
+    protected void onPause() {
+    	unregisterReceiver(receiver);
+    	super.onPause();
+    }
+}

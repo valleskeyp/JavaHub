@@ -1,0 +1,17 @@
+package com.valleskeyp.tubehub;
+
+import android.app.IntentService;
+import android.content.Intent;
+
+public class DeleteService extends IntentService {
+
+	public DeleteService() {
+		super("DeleteService");
+	}
+
+	@Override
+	protected void onHandleIntent(Intent intent) {
+		
+	}
+
+}

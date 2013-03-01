@@ -7,15 +7,10 @@
 
     <string-array name="categories">
         <item>People</item>
-        <item>Autos</item>
-        <item>Music</item>
         <item>Animals</item>
         <item>Sports</item>
-        <item>Travel</item>
-        <item>Games</item>
         <item>Comedy</item>
         <item>News</item>
-        <item>Education</item>
     </string-array>
 
     <string name="title_activity_main">TubeHub</string>
