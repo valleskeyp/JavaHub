@@ -1,0 +1,48 @@
+package com.valleskeyp.primerhyme;
+
+import android.app.Activity;
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Spinner;
+import android.widget.Toast;
+import com.valleskeyp.primerhyme.db.RhymeTable;
+import com.valleskeyp.primerhyme.db.MyRhymeContentProvider;
+
+public class CreateView extends Activity {
+	
+	private EditText _rhymeTitle;
+	private EditText _rhymeBody;
+	private EditText _rhymeWord;
+	private Button _rhymeButton;
+	private ListView _rhymeListResults;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_create);
+		
+	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// TODO Auto-generated method stub
+		getMenuInflater().inflate(R.menu.new_list, menu);
+		return true;
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// TODO Auto-generated method stub
+		return super.onOptionsItemSelected(item);
+	}
+
+}
