@@ -1,9 +1,0 @@
-package com.valleskeyp.tubehub;
-
-public class SingleVideoService {
-
-	public SingleVideoService() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

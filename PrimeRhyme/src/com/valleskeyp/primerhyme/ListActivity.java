@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -23,15 +22,14 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 
 public class ListActivity extends Activity implements LoaderManager.LoaderCallbacks<Cursor> {
 	Context _context;
 	ListView _listview;
 	
-	private static final int ACTIVITY_CREATE = 0;
-	private static final int ACTIVITY_EDIT = 1;
+
 	private static final int DELETE_ID = Menu.FIRST + 1;
-	// private Cursor cursor;
 	private SimpleCursorAdapter adapter;
 
 	@Override
@@ -86,7 +84,8 @@ public class ListActivity extends Activity implements LoaderManager.LoaderCallba
 			startActivity(i);
 			break;
 		case R.id.menu_about:
-			
+			Intent i2 = new Intent(_context, AboutView.class);
+			startActivity(i2);
 			break;
 		default:
 			break;
@@ -113,9 +112,15 @@ public class ListActivity extends Activity implements LoaderManager.LoaderCallba
 
 	  @Override
 	  public void onCreateContextMenu(ContextMenu menu, View v,
-	      ContextMenuInfo menuInfo) {
+	      ContextMenu.ContextMenuInfo menuInfo) {
 	    super.onCreateContextMenu(menu, v, menuInfo);
-	    menu.add(0, DELETE_ID, 0, "Delete");
+	    
+	    AdapterView.AdapterContextMenuInfo info =
+	            (AdapterView.AdapterContextMenuInfo) menuInfo;
+	    String selectedWord = ((TextView) info.targetView.findViewById(R.id.label)).getText().toString();
+	    menu.setHeaderTitle("Do you wish to delete: " + selectedWord);
+	    menu.add(0, DELETE_ID, 0, "Yes");
+	    menu.add(0, 0, 0, "No");
 	  }
 
 	  // Creates a new loader after the initLoader () call

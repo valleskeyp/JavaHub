@@ -1,0 +1,9 @@
+package com.valleskeyp.primerhyme;
+
+public class CreateRhymeFragment {
+
+	public CreateRhymeFragment() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

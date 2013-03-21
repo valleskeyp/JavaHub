@@ -1,0 +1,9 @@
+package com.valleskeyp.primerhyme;
+
+public class RhymeService {
+
+	public RhymeService() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

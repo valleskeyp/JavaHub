@@ -1,5 +1,0 @@
-package com.valleskeyp.tubehub;
-
-public interface RefreshInterface {
-
-}

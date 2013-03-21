@@ -1,17 +1,31 @@
 package com.valleskeyp.primerhyme;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -21,6 +35,7 @@ import com.valleskeyp.primerhyme.db.RhymeTable;
 import com.valleskeyp.primerhyme.db.MyRhymeContentProvider;
 
 public class CreateView extends Activity {
+	private ResponseReceiver receiver;
 	
 	private Context _context;
 	private EditText _rhymeTitle;
@@ -28,8 +43,13 @@ public class CreateView extends Activity {
 	private EditText _rhymeWord;
 	private Button _rhymeButton;
 	private ListView _rhymeListResults;
+	ArrayList<String> _list;
 	
 	private Uri rhymeUri;
+	
+	static final String RHYME_WORD = "rhymeWord";
+	private String THE_WORD;
+	static final String RHYME_LIST = "rhymeList";
 	
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -42,6 +62,10 @@ public class CreateView extends Activity {
 		_rhymeWord = (EditText) findViewById(R.id.rhyme_word);
 		_rhymeButton = (Button) findViewById(R.id.rhyme_button_search);
 		_rhymeListResults = (ListView) findViewById(R.id.rhyme_list_results);
+		
+		if (!_rhymeWord.toString().isEmpty()) {
+			THE_WORD = _rhymeWord.getText().toString();
+		}
 		
 		Bundle extras = getIntent().getExtras();
 
@@ -70,7 +94,28 @@ public class CreateView extends Activity {
 			    	imm.hideSoftInputFromWindow(createLayout.getWindowToken(), 0);
 			    	
 			    	Toast.makeText(CreateView.this, "Searching words that rhyme with " + _rhymeWord.getText().toString() + "...", Toast.LENGTH_LONG).show();
+			    	
+			    	// clear out listview, then begin search process
+			    	_rhymeListResults.setAdapter(null);
+			    	
+			    	Intent msgIntent = new Intent(_context, RhymeService.class);
+			    	msgIntent.putExtra("word", _rhymeWord.getText().toString());
+			    	startService(msgIntent);
 			    }
+			}
+		});
+	    
+	    _rhymeListResults.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				String selectedFromList =(_rhymeListResults.getItemAtPosition(position).toString());
+				ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+				ClipData clip = ClipData.newPlainText("simple text",selectedFromList);
+				clipboard.setPrimaryClip(clip);
+				Toast.makeText(CreateView.this, "Copied to clipboard", Toast.LENGTH_SHORT).show();
+				return false;
 			}
 		});
 	  }
@@ -138,12 +183,105 @@ public class CreateView extends Activity {
 			}
 			break;
 		case R.id.menu_about:
-			
+			Intent i2 = new Intent(_context, AboutView.class);
+			startActivity(i2);
+			break;
+		case R.id.menu_share:
+			shareIt();
 			break;
 		default:
 			break;
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
+	public void shareIt() {
+		Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+		sharingIntent.setType("text/plain");
+		
+		sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, _rhymeBody.getText().toString());
+		startActivity(Intent.createChooser(sharingIntent, "Share via"));
+	}
+	
+	public class ResponseReceiver extends BroadcastReceiver {
+		public static final String RHYME_RESPONSE = "com.valleskeyp.intent.action.RHYME_RESPONSE";
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			_list = new ArrayList<String>();
+			int check = 0;
+			if(intent.getAction().equals(RHYME_RESPONSE)) {
+				String data = intent.getStringExtra("rhymeList");
+				try {
+					JSONArray json = new JSONArray(data);
+					
+					for (int i = 0; i < json.length(); i++) {
+						JSONObject word = json.getJSONObject(i);
+						int myNum = 0;
+						try {
+						    myNum = Integer.parseInt(word.getString("score"));
+						} catch(NumberFormatException nfe) {}
+						if (word.getString("flags").contains("a")) {
+							// word is considered offensive, skip it
+							Log.i("PRIME_RHYME", word.getString("word"));
+							Log.i("PRIME_RHYME", word.getString("flags"));
+							Log.i("PRIME_RHYME", "----OFFENSIVE_WORD-----");
+						} else if (myNum > 299) {
+							// skips words that aren't perfect rhymes
+							Log.i("PRIME_RHYME", word.getString("word"));
+							Log.i("PRIME_RHYME", word.getString("score"));
+							Log.i("PRIME_RHYME", "---------------");
+							check++;
+							_list.add(word.getString("word"));
+						}
+					}
+				} catch (JSONException e) {
+					
+					e.printStackTrace();
+				}
+				if (check == 0) {
+					_list.add("No rhyming matches found");
+				}
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list);
+				_rhymeListResults.setAdapter(adapter);
+				THE_WORD = _rhymeWord.getText().toString();
+			}
+			
+		}
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		IntentFilter filter = new IntentFilter(ResponseReceiver.RHYME_RESPONSE);
+		filter.addCategory(Intent.CATEGORY_DEFAULT);
+        receiver = new ResponseReceiver();
+        registerReceiver(receiver, filter);
+        
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		unregisterReceiver(receiver);
+		
+		super.onPause();
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString(RHYME_WORD, THE_WORD);
+		outState.putStringArrayList(RHYME_LIST, _list);
+		super.onSaveInstanceState(outState);
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		_rhymeWord.setText(savedInstanceState.getString(RHYME_WORD));
+		THE_WORD = savedInstanceState.getString(RHYME_WORD);
+		_list = savedInstanceState.getStringArrayList(RHYME_LIST);
+		if (_list != null) {
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list);
+			_rhymeListResults.setAdapter(adapter);
+		}
+	}
 }
