@@ -10,10 +10,10 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,6 +38,8 @@ public class ListActivity extends Activity implements LoaderManager.LoaderCallba
 		setContentView(R.layout.activity_list);
 		_context = this;
 		_listview = (ListView) findViewById(R.id.list_rhymes);
+		
+	    
 		fillData();
 		registerForContextMenu(_listview);
 		
@@ -106,10 +108,20 @@ public class ListActivity extends Activity implements LoaderManager.LoaderCallba
 	    getLoaderManager().initLoader(0, null, this);
 	    adapter = new SimpleCursorAdapter(this, R.layout.rhyme_row, null, from,
 	        to, 0);
-
+	    final Typeface font = Typeface.createFromAsset(getAssets(), "FultonsHand_Regular.ttf");
+	    adapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
+			
+			@Override
+			public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
+				TextView textView = (TextView) view;
+				textView.setTypeface(font);
+				return false;
+			}
+		});
 	    _listview.setAdapter(adapter);
+	    
 	  }
-
+	  
 	  @Override
 	  public void onCreateContextMenu(ContextMenu menu, View v,
 	      ContextMenu.ContextMenuInfo menuInfo) {

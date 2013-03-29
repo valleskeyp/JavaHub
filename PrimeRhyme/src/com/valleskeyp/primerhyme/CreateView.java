@@ -15,6 +15,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -30,6 +31,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.valleskeyp.primerhyme.db.RhymeTable;
 import com.valleskeyp.primerhyme.db.MyRhymeContentProvider;
@@ -42,6 +44,7 @@ public class CreateView extends Activity {
 	private EditText _rhymeBody;
 	private EditText _rhymeWord;
 	private Button _rhymeButton;
+	private TextView _rhymeText;
 	private ListView _rhymeListResults;
 	ArrayList<String> _list;
 	
@@ -62,7 +65,15 @@ public class CreateView extends Activity {
 		_rhymeWord = (EditText) findViewById(R.id.rhyme_word);
 		_rhymeButton = (Button) findViewById(R.id.rhyme_button_search);
 		_rhymeListResults = (ListView) findViewById(R.id.rhyme_list_results);
+		_rhymeText = (TextView) findViewById(R.id.rhyme_title_desc);
 		
+		Typeface font = Typeface.createFromAsset(getAssets(), "FultonsHand_Regular.ttf");
+	    _rhymeTitle.setTypeface(font);
+	    _rhymeBody.setTypeface(font);
+	    _rhymeWord.setTypeface(font);
+	    _rhymeButton.setTypeface(font);
+	    _rhymeText.setTypeface(font);
+	    
 		if (!_rhymeWord.toString().isEmpty()) {
 			THE_WORD = _rhymeWord.getText().toString();
 		}
@@ -240,7 +251,16 @@ public class CreateView extends Activity {
 				if (check == 0) {
 					_list.add("No rhyming matches found");
 				}
-				ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list);
+				ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list) {
+					public View getView(int position, View v, android.view.ViewGroup parent) {
+						TextView textView = (TextView) super.getView(position, v, parent);
+						Typeface font = Typeface.createFromAsset(getAssets(), "FultonsHand_Regular.ttf");
+			            textView.setTypeface(font);
+						
+						return textView;
+					};
+				};
+
 				_rhymeListResults.setAdapter(adapter);
 				THE_WORD = _rhymeWord.getText().toString();
 			}
@@ -280,7 +300,15 @@ public class CreateView extends Activity {
 		THE_WORD = savedInstanceState.getString(RHYME_WORD);
 		_list = savedInstanceState.getStringArrayList(RHYME_LIST);
 		if (_list != null) {
-			ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list);
+			ArrayAdapter<String> adapter = new ArrayAdapter<String>(_context, android.R.layout.simple_list_item_1, android.R.id.text1, _list) {
+				public View getView(int position, View v, android.view.ViewGroup parent) {
+					TextView textView = (TextView) super.getView(position, v, parent);
+					Typeface font = Typeface.createFromAsset(getAssets(), "FultonsHand_Regular.ttf");
+		            textView.setTypeface(font);
+					
+					return textView;
+				};
+			};
 			_rhymeListResults.setAdapter(adapter);
 		}
 	}

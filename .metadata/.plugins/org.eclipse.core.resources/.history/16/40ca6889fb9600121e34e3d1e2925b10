@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.valleskeyp.primerhyme"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="16"
+        android:targetSdkVersion="17" />
+	
+    <uses-permission android:name="android.permission.INTERNET" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name="com.valleskeyp.primerhyme.ListActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.valleskeyp.primerhyme.CreateView"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustNothing"
+            android:theme="@android:style/Theme.Holo" >
+            
+        </activity>
+        <activity 
+            android:name="com.valleskeyp.primerhyme.AboutView"
+            android:label="@string/app_name"
+            android:theme="@android:style/Theme.Holo" >
+            
+        </activity>
+        <activity android:name=".WidgetSearch"
+            android:launchMode="singleInstance"
+            android:theme="@style/Theme.widgetSearchBG"/>
+        
+        <provider 
+            android:name="com.valleskeyp.primerhyme.db.MyRhymeContentProvider"
+            android:exported="false"
+            android:authorities="com.valleskeyp.android.rhymes.contentprovider" >
+        </provider>
+        <service android:name=".RhymeService" />
+	</application>
+
+</manifest>

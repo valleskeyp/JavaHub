@@ -1,9 +1,0 @@
-package com.valleskeyp.primerhyme;
-
-public class CreateView {
-
-	public CreateView() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

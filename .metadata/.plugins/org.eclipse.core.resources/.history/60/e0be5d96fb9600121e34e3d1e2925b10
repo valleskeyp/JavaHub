@@ -1,0 +1,11 @@
+package com.valleskeyp.primerhyme;
+
+import android.app.Activity;
+
+public class WidgetSearch extends Activity {
+
+	public WidgetSearch() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
