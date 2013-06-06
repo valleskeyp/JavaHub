@@ -1,0 +1,46 @@
+package sqliteDB;
+
+import android.content.Context;
+import android.database.DatabaseErrorHandler;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabase.CursorFactory;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DatabaseAdapter extends SQLiteOpenHelper {
+
+	private static final String DATABASE_NAME = "employee.db";
+	private static final int DATABASE_VERSION = 1;
+	
+	private static final String TABLE_EMPLOYEE = "employees";
+	private static final String COLUMN_ID = "employeeId";
+	private static final String FIRST_NAME = "firstName";
+	private static final String LAST_NAME = "lastName";
+	private static final String GENDER = "gender";
+	private static final String CITY = "city";
+	private static final String STATE = "state";
+	
+	private static final String TABLE_CREATE = "CREATE TABLE " + TABLE_EMPLOYEE + " (" +
+								COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+								FIRST_NAME + " TEXT, " +
+								LAST_NAME + " TEXT, " +
+								GENDER + " TEXT, " +
+								CITY + " TEXT, " +
+								STATE + " TEXT)";
+	
+	public DatabaseAdapter(Context context) {
+		super(context, DATABASE_NAME, null, DATABASE_VERSION);
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		db.execSQL(TABLE_CREATE);
+
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_EMPLOYEE);
+		onCreate(db);
+	}
+
+}

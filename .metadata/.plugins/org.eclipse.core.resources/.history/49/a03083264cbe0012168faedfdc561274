@@ -1,0 +1,9 @@
+package com.example.sqliteproject;
+
+public class CreateActivity {
+
+	public CreateActivity() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

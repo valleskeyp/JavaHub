@@ -1,0 +1,11 @@
+package sqliteDB;
+
+import android.content.Context;
+
+public class EmployeeDataSource {
+
+	public EmployeeDataSource(Context context) {
+		
+	}
+
+}

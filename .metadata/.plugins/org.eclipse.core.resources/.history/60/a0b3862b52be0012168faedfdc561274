@@ -1,0 +1,34 @@
+package sqliteDB;
+
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class EmployeeDataSource {
+	
+	SQLiteOpenHelper dbhelper;
+	SQLiteDatabase database;
+	
+	public EmployeeDataSource(Context context) {
+		dbhelper = new DatabaseAdapter(context);
+	}
+	
+	public void open() {
+		database = dbhelper.getWritableDatabase();
+	}
+	
+	public void close() {
+		dbhelper.close();
+	}
+	
+	public void create(String[] items) {
+		ContentValues values = new ContentValues();
+		values.put(DatabaseAdapter.FIRST_NAME, items[0]);
+		values.put(DatabaseAdapter.FIRST_NAME, items[1]);
+		values.put(DatabaseAdapter.FIRST_NAME, items[2]);
+		values.put(DatabaseAdapter.FIRST_NAME, items[3]);
+		values.put(DatabaseAdapter.FIRST_NAME, items[4]);
+		database.insert(DatabaseAdapter.TABLE_EMPLOYEE, null, values);
+	}
+}

@@ -1,0 +1,23 @@
+package sqliteDB;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class EmployeeDataSource {
+	
+	SQLiteOpenHelper dbhelper;
+	SQLiteDatabase database;
+	
+	public EmployeeDataSource(Context context) {
+		dbhelper = new DatabaseAdapter(context);
+	}
+	
+	public void open() {
+		database = dbhelper.getWritableDatabase();
+	}
+	
+	public void close() {
+		dbhelper.close();
+	}
+}

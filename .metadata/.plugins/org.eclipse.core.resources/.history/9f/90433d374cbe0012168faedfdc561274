@@ -1,0 +1,43 @@
+package com.example.sqliteproject;
+
+import sqliteDB.EmployeeDataSource;
+import android.os.Bundle;
+import android.app.Activity;
+import android.view.Menu;
+
+public class MainActivity extends Activity {
+	
+	EmployeeDataSource datasource;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main);
+		
+		datasource = new EmployeeDataSource(this);
+		
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+	@Override
+	protected void onResume() {
+		super.onResume();
+		datasource.open();
+	}
+	@Override
+	protected void onPause() {
+		super.onPause();
+		datasource.close();
+	}
+	
+	private void createData() {
+		// get data from fields --- put into string array and pass into datasource
+		
+		// datasource.create(items);
+	}
+}

@@ -1,0 +1,11 @@
+package com.example.sqliteproject;
+
+import android.app.Activity;
+
+public class SecondActivity extends Activity {
+
+	public SecondActivity() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

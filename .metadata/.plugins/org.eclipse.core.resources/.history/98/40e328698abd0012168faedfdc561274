@@ -1,0 +1,9 @@
+package sqliteDB;
+
+public class PersonDatabaseHelper {
+
+	public PersonDatabaseHelper() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
