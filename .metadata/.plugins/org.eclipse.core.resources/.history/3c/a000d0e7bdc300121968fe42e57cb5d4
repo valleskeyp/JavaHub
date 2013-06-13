@@ -1,9 +1,0 @@
-package com.example.sqliteproject;
-
-public class DialogFragment {
-
-	public DialogFragment() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

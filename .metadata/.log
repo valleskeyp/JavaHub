@@ -1882,3 +1882,32 @@ com.sun.jdi.VMDisconnectedException: Got IOException from Virtual Machine
 	at org.eclipse.jdt.internal.launching.SocketAttachConnector.connect(SocketAttachConnector.java:143)
 	at com.android.ide.eclipse.adt.internal.launch.AndroidLaunchController.connectRemoteDebugger(AndroidLaunchController.java:1419)
 	at com.android.ide.eclipse.adt.internal.launch.AndroidLaunchController$4.run(AndroidLaunchController.java:1700)
+
+!ENTRY com.google.gdt.eclipse.platform.shared 2 0 2013-06-10 10:01:49.073
+!MESSAGE org.mortbay.jetty: 1 threads could not be stopped
+!SESSION 2013-06-10 10:11:44.077 -----------------------------------------------
+eclipse.buildId=M20130204-1200
+java.version=1.7.0_09
+java.vendor=Oracle Corporation
+BootLoader constants: OS=macosx, ARCH=x86_64, WS=cocoa, NL=en_US
+Framework arguments:  -keyring /Users/petervalleskey/.eclipse_keyring -showlocation
+Command-line arguments:  -os macosx -ws cocoa -arch x86_64 -keyring /Users/petervalleskey/.eclipse_keyring -showlocation
+
+!ENTRY org.eclipse.core.net 1 0 2013-06-10 10:11:51.017
+!MESSAGE System property http.nonProxyHosts has been set to local|*.local|169.254/16|*.169.254/16 by an external source. This value will be overwritten using the values from the preferences
+
+!ENTRY com.android.ide.eclipse.adt 4 0 2013-06-10 11:53:08.871
+!MESSAGE 
+!STACK 1
+org.eclipse.core.internal.resources.ResourceException: Resource '/MGDGame-android/res' does not exist.
+	at org.eclipse.core.internal.resources.Resource.checkExists(Resource.java:341)
+	at org.eclipse.core.internal.resources.Resource.checkAccessible(Resource.java:215)
+	at org.eclipse.core.internal.resources.Container.members(Container.java:266)
+	at org.eclipse.core.internal.resources.Container.members(Container.java:249)
+	at com.android.ide.eclipse.adt.internal.sdk.Sdk$7.run(Sdk.java:1433)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:53)
+!SUBENTRY 1 org.eclipse.core.resources 4 368 2013-06-10 11:53:08.902
+!MESSAGE Resource '/MGDGame-android/res' does not exist.
+
+!ENTRY org.eclipse.ui 2 2 2013-06-10 13:15:15.808
+!MESSAGE Invalid property category path: ValidationPropertiesPage (bundle: org.eclipse.wst.xml.ui, propertyPage: org.eclipse.wst.xml.ui.propertyPage.project.validation)

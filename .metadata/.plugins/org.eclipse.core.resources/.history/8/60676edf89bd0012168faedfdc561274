@@ -1,9 +1,0 @@
-package sqliteDB;
-
-public class PersonTable {
-
-	public PersonTable() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

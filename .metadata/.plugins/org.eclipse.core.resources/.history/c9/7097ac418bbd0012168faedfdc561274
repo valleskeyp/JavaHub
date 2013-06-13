@@ -1,9 +1,0 @@
-package sqliteContentProvider;
-
-public class MyPersonContentProvider {
-
-	public MyPersonContentProvider() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

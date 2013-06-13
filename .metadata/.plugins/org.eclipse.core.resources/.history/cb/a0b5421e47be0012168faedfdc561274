@@ -1,9 +1,0 @@
-package sqliteDB;
-
-public class EmployeeDataSource {
-
-	public EmployeeDataSource() {
-		// TODO Auto-generated constructor stub
-	}
-
-}
