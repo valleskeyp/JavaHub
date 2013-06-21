@@ -1,0 +1,23 @@
+package com.valleskeyp.mgdgame;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+
+public class Card {
+	Texture texture;
+	float x;
+	float y;
+	
+	public Card(Texture t) {
+		texture = t;
+	}
+	
+	public void update() {
+		
+	}
+	
+	public void draw(SpriteBatch batch) {
+		batch.draw(texture, x, y);
+	}
+	
+}

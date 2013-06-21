@@ -1,0 +1,397 @@
+package com.valleskeyp.mgdgame;
+
+import java.util.Timer;
+import java.util.TimerTask;
+
+import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
+
+public class GameClass implements ApplicationListener, InputProcessor {
+	private OrthographicCamera camera;
+	private SpriteBatch batch;
+	private Texture texture;
+	private Sprite sprite;
+	private Sprite shadow;
+	private Sprite pause;
+	private Sprite play;
+	private Sprite card;
+	private Sprite card2;
+	private Sprite cardFlipped;
+	private Sprite cardFlipped2;
+	private Sprite cardFlipped3;
+	private Sprite wrong;
+	private Sprite wrong2;
+	private Sprite wrong3;
+	private Sprite gameOverText;
+	private Sound correct;
+	private Sound incorrect;
+	private Music bgMusic;
+	private String answer = "";
+	private Boolean isPlaying = true;
+	private int wrongGuesses = 0;
+	private Boolean gameOver = false;
+	private Card cardClass;
+	
+	@Override
+	public void create() {		
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		Gdx.input.setInputProcessor(this);
+		
+		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("data/BGMusic.mp3"));
+		bgMusic.setVolume(0.15f);
+		bgMusic.play();
+		bgMusic.setLooping(true);
+		
+		correct = Gdx.audio.newSound(Gdx.files.internal("data/correct.mp3"));
+		incorrect = Gdx.audio.newSound(Gdx.files.internal("data/incorrect.wav"));
+		
+		camera = new OrthographicCamera(1, h/w);
+		batch = new SpriteBatch();
+		
+		// background    ----  Don't forget to add sprite to draw batch when done
+		
+		texture = new Texture(Gdx.files.internal("data/bgGDX.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		TextureRegion region = new TextureRegion(texture, 0, 0, 800, 480);
+		
+		sprite = new Sprite(region);
+		sprite.setSize(1f, 1f * sprite.getHeight() / sprite.getWidth());
+		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+		
+		// bg shadow
+		texture = new Texture(Gdx.files.internal("data/shadow.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 800, 480);
+		
+		shadow = new Sprite(region);
+		shadow.setSize(1f, 1f * shadow.getHeight() / shadow.getWidth());
+		shadow.setOrigin(shadow.getWidth()/2, shadow.getHeight()/2);
+		shadow.setPosition(-shadow.getWidth()/2, -shadow.getHeight()/2);
+		
+		// pause button
+		texture = new Texture(Gdx.files.internal("data/pause.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 32, 32);
+		
+		pause = new Sprite(region);
+		pause.setSize(.064f, .064f);
+		pause.setOrigin(pause.getWidth()/2, pause.getHeight()/2);
+		pause.setPosition(0.424f, 0.22f);
+		
+		// play button
+		texture = new Texture(Gdx.files.internal("data/play.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		region = new TextureRegion(texture, 0, 0, 32, 32);
+
+		play = new Sprite(region);
+		play.setSize(.064f, .064f);
+		play.setOrigin(play.getWidth()/2, play.getHeight()/2);
+		play.setPosition(0.424f, 0.22f);
+		
+		// ? card
+		texture = new Texture(Gdx.files.internal("data/card.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+cardClass = new Card(texture, 0f, .10f);
+		region = new TextureRegion(texture, 0, 0, 80, 115);
+		
+		card = new Sprite(region);
+		card.setSize(.08f, .115f);
+		card.setOrigin(card.getWidth()/2, card.getHeight()/2);
+		card.setPosition(-.45f, 0);
+		
+		card2 = new Sprite(region);
+		card2.setSize(.08f, .115f);
+		card2.setOrigin(card.getWidth()/2, card.getHeight()/2);
+		card2.setPosition(-0.1f, 0);
+		
+		// A card
+		texture = new Texture(Gdx.files.internal("data/cardFlipped.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 80, 115);
+		
+		cardFlipped = new Sprite(region);
+		cardFlipped.setSize(.08f, .115f);
+		cardFlipped.setOrigin(cardFlipped.getWidth()/2, cardFlipped.getHeight()/2);
+		cardFlipped.setPosition(.1f, 0);
+		
+		cardFlipped2 = new Sprite(region);
+		cardFlipped2.setSize(.08f, .115f);
+		cardFlipped2.setPosition(-.45f, 0);
+		cardFlipped2.setOrigin(cardFlipped2.getWidth()/2, cardFlipped2.getHeight()/2);
+		
+		// B card
+		texture = new Texture(Gdx.files.internal("data/cardFlipped3.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		region = new TextureRegion(texture, 0, 0, 80, 115);
+		
+		cardFlipped3 = new Sprite(region);
+		cardFlipped3.setSize(.08f, .115f);
+		cardFlipped3.setOrigin(cardFlipped3.getWidth()/2, cardFlipped3.getHeight()/2);
+		cardFlipped3.setPosition(-0.1f, 0);
+		
+		// wrong cards
+		texture = new Texture(Gdx.files.internal("data/wrong.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		region = new TextureRegion(texture, 0, 0, 80, 115);
+
+		wrong = new Sprite(region);
+		wrong.setSize(.08f, .115f);
+		wrong.setOrigin(wrong.getWidth()/2, wrong.getHeight()/2);
+		wrong.setPosition(-0.424f, -0.22f);
+		
+		wrong2 = new Sprite(region);
+		wrong2.setSize(.08f, .115f);
+		wrong2.setOrigin(wrong2.getWidth()/2, wrong2.getHeight()/2);
+		wrong2.setPosition(-0.354f, -0.22f);
+		
+		wrong3 = new Sprite(region);
+		wrong3.setSize(.08f, .115f);
+		wrong3.setOrigin(wrong3.getWidth()/2, wrong3.getHeight()/2);
+		wrong3.setPosition(-0.284f, -0.22f);
+		
+		// game over text
+		texture = new Texture(Gdx.files.internal("data/gameOver.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		region = new TextureRegion(texture, 0, 0, 256, 128);
+
+		gameOverText = new Sprite(region);
+		gameOverText.setSize(.256f, .128f);
+		gameOverText.setOrigin(gameOverText.getWidth()/2, gameOverText.getHeight()/2);
+		gameOverText.setPosition(-.128f, -.064f);
+	}
+
+	@Override
+	public void dispose() {  //     DON'T FORGET TO DISPOSE OF EVERYTHING POSSIBLE!
+		batch.dispose();
+		texture.dispose();
+		correct.dispose();
+		incorrect.dispose();
+		bgMusic.dispose();
+	}
+
+	@Override
+	public void render() {	
+		if (!gameOver) {
+			if (isPlaying) {
+				Gdx.gl.glClearColor(0, 0, 0, 1);
+				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+				float dt = Gdx.graphics.getDeltaTime();
+
+				batch.setProjectionMatrix(camera.combined);
+				batch.begin();
+				sprite.draw(batch);
+				pause.draw(batch);
+cardClass.draw(batch);
+				if(answer.equals("")) {
+					card.draw(batch);
+					card2.draw(batch);
+				} else if(answer.equals("correct")) {
+					cardFlipped2.draw(batch);
+					card2.draw(batch);
+					cardMove(dt);
+					if (Intersector.overlaps(cardFlipped.getBoundingRectangle(), cardFlipped2.getBoundingRectangle())) {
+						answer = "";
+						cardFlipped2.setPosition(-.45f, 0);
+						//   if cardFlipped COLLIDES with cardFlipped2,
+						//   then set answer to false and set cardFlipped2 back to -0.45f,0  x,y position
+					}
+				} else if(answer.equals("wrong")) {
+					card.draw(batch);
+					cardFlipped3.draw(batch);
+				}
+				switch (wrongGuesses) {
+				case 1: 
+					wrong.draw(batch);
+					break;
+				case 2:
+					wrong.draw(batch);
+					wrong2.draw(batch);
+					break;
+				case 3:
+					wrong.draw(batch);
+					wrong2.draw(batch);
+					wrong3.draw(batch);
+					break;
+				default:
+					break;
+				}
+				cardFlipped.draw(batch);
+				batch.end();
+			} else {
+				Gdx.gl.glClearColor(0, 0, 0, 1);
+				Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+				batch.setProjectionMatrix(camera.combined);
+				batch.begin();
+				sprite.draw(batch);
+				if(answer.equals("")) {
+					card.draw(batch);
+					card2.draw(batch);
+				} else if(answer.equals("correct")) {
+					cardFlipped2.draw(batch);
+					card2.draw(batch);
+					//cardMove(dt);  dont move while paused
+					if (Intersector.overlaps(cardFlipped.getBoundingRectangle(), cardFlipped2.getBoundingRectangle())) {
+						answer = "";
+						cardFlipped2.setPosition(-.45f, 0);
+						//   if cardFlipped COLLIDES with cardFlipped2,
+						//   then set answer to false and set cardFlipped2 back to -0.45f,0  x,y position
+					}
+				} else if(answer.equals("wrong")) {
+					card.draw(batch);
+					cardFlipped3.draw(batch);
+				}
+
+				cardFlipped.draw(batch);
+				shadow.draw(batch);
+				play.draw(batch);
+				batch.end();
+			}
+		} else {
+			Gdx.gl.glClearColor(0, 0, 0, 1);
+			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+			batch.setProjectionMatrix(camera.combined);
+			batch.begin();
+			sprite.draw(batch);
+			shadow.draw(batch);
+			gameOverText.draw(batch);
+			batch.end();
+		}
+	}
+
+	@Override
+	public void resize(int width, int height) {
+	}
+
+	@Override
+	public void pause() {
+		if( isPlaying )
+        {
+            isPlaying = false;
+            bgMusic.pause();
+        }
+        else
+        {
+            isPlaying = true;
+            bgMusic.play();
+        }
+	}
+
+	@Override
+	public void resume() {
+	}
+
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		
+		return false;
+	}
+
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		Vector2 touchPos = new Vector2();
+        touchPos.set(Gdx.input.getX(), Gdx.input.getY());
+
+        Ray cameraRay = camera.getPickRay(touchPos.x, touchPos.y);
+        if (isPlaying && !gameOver) {  // only act when game is playing
+        	if (card.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+        		if (answer.equals("")) {
+        			correct.play(1.0f);
+        			answer = "correct";
+        		}
+        	}
+        	if (card2.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+        		if (answer.equals("")) {
+        			incorrect.play(1.0f);
+        			answer = "wrong";
+        			wrongGuesses += 1;
+        			if (wrongGuesses == 4) {
+        				answer = "";
+        				gameOver = true;
+        				Timer timer = new Timer();
+            			timer.schedule(new TimerTask() { 
+            				// let the incorrect card display for 2 seconds, then hide and return to neutral state
+            				public void run() {
+            					gameOver = false;
+            					wrongGuesses = 0;
+            				} 
+            			}, 3000);
+					} else {
+						Timer timer = new Timer();
+						timer.schedule(new TimerTask() { 
+							// let the incorrect card display for 2 seconds, then hide and return to neutral state
+							public void run() {
+								answer = "";
+							} 
+						}, 2000);
+					}
+        		}
+        	}
+        }
+        
+        if (pause.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y) || play.getBoundingRectangle().contains(cameraRay.origin.x, cameraRay.origin.y)) {
+			pause();  // pause/resume game
+		}
+		return true;
+	}
+
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+	
+	public void cardMove(float _dt) {
+		// hard coded to send cardFlipped2 sprite toward card sprite
+		cardFlipped2.setPosition(cardFlipped2.getX() + (0.3f * _dt), cardFlipped2.getY());
+	}
+	
+}

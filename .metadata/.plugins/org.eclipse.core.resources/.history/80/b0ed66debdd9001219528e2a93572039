@@ -1,0 +1,9 @@
+package com.valleskeyp.mgdgame;
+
+public class Card {
+
+	public Card() {
+		// TODO Auto-generated constructor stub
+	}
+
+}

@@ -1,0 +1,30 @@
+package com.valleskeyp.mgdgame;
+
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+public class Card {
+	Sprite card;
+	float x;
+	float y;
+	
+	public Card(Texture t) {
+		TextureRegion region = new TextureRegion(t, 0, 0, 80, 115);
+		
+		card = new Sprite(region);
+		card.setSize(.08f, .115f);
+		card.setOrigin(card.getWidth()/2, card.getHeight()/2);
+		card.setPosition(-.45f, 0);
+	}
+	
+	public void update() {
+		
+	}
+	
+	public void draw(SpriteBatch batch) {
+		card.draw(batch);
+	}
+	
+}
