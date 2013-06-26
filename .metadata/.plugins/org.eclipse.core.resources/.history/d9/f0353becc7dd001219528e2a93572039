@@ -1,0 +1,9 @@
+package screens;
+
+public class splashScreen {
+
+	public splashScreen() {
+		// TODO Auto-generated constructor stub
+	}
+
+}
