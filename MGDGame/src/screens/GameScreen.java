@@ -198,17 +198,17 @@ public class GameScreen implements Screen, InputProcessor {
 		for (HashMap<String, Float> hm : coord) {
 			String str = "";
 			if (i < 2) {
-				str = "A";
+				str = "a";
 			} else if (i < 4 && i >= 2) {
-				str = "B";
+				str = "b";
 			} else if (i < 6 && i >= 4) {
-				str = "C";
+				str = "c";
 			} else if (i < 8 && i >= 6) {
-				str = "D";
+				str = "d";
 			} else if (i < 10 && i >= 8) {
-				str = "E";
+				str = "e";
 			} else if (i < 12 && i >= 10) {
-				str = "F";
+				str = "f";
 			}
 			Card card = new Card(hm.get("x"), hm.get("y"), str);
 			cards.add(card);
@@ -388,42 +388,42 @@ public class GameScreen implements Screen, InputProcessor {
 					if (answer.equals("")) {
 						if (!card.isFlipped == true) {
 							String str = card.letter;
-							if (str.equals("A")) {
+							if (str.equals("a")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
 								} else {
 									card2 = card;
 								}
-							} else if (str.equals("B")) {
+							} else if (str.equals("b")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
 								} else {
 									card2 = card;
 								}
-							} else if (str.equals("C")) {
+							} else if (str.equals("c")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
 								} else {
 									card2 = card;
 								}
-							} else if (str.equals("D")) {
+							} else if (str.equals("d")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
 								} else {
 									card2 = card;
 								}
-							} else if (str.equals("E")) {
+							} else if (str.equals("e")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
 								} else {
 									card2 = card;
 								}
-							} else if (str.equals("F")) {
+							} else if (str.equals("f")) {
 								card.flipCard();
 								if (card1 == null) {
 									card1 = card;
@@ -468,7 +468,7 @@ public class GameScreen implements Screen, InputProcessor {
 											card1 = null;
 											card2 = null;
 										} 
-									}, 2500);
+									}, 200);
 								}
 							}
 						}
