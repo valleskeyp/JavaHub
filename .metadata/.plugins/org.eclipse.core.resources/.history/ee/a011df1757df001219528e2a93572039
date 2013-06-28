@@ -1,0 +1,117 @@
+package screens;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
+public class CreditsScreen implements Screen, InputProcessor {
+	private OrthographicCamera camera;
+	private SpriteBatch batch;
+	private Texture texture;
+	private Sprite sprite, backButton;
+	
+	@Override
+	public void show() {
+		float w = Gdx.graphics.getWidth();
+		float h = Gdx.graphics.getHeight();
+		
+		camera = new OrthographicCamera(1, h/w);
+		batch = new SpriteBatch();
+		Gdx.input.setInputProcessor(this);
+		
+		// background    ----  Don't forget to add sprite to draw batch when done  ***AND ALSO DISPOSE***
+		texture = new Texture(Gdx.files.internal("data/creditsScreen.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		TextureRegion region = new TextureRegion(texture, 0, 0, 800, 480);
+
+		sprite = new Sprite(region);
+		sprite.setSize(1f, 1f * sprite.getHeight() / sprite.getWidth());
+		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
+		sprite.setPosition(-sprite.getWidth()/2, -sprite.getHeight()/2);
+
+		texture = new Texture(Gdx.files.internal("data/backButton.png"));
+		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
+		region = new TextureRegion(texture, 0, 0, 64, 64);
+
+		backButton = new Sprite(region);
+		backButton.setSize(.064f, .064f);
+		backButton.setOrigin(backButton.getWidth()/2, backButton.getHeight()/2);
+		backButton.setPosition(-1f, h/w + .032f);
+	}
+	
+	@Override
+	public void render(float delta) {
+		
+	}
+	
+	@Override
+	public void dispose() {
+		
+	}
+	
+	@Override
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+	
+		return false;
+	}
+	
+	
+	
+	
+	@Override
+	public void resize(int width, int height) {
+		
+	}
+
+	@Override
+	public void hide() {
+		
+	}
+
+	@Override
+	public void pause() {
+		
+	}
+
+	@Override
+	public void resume() {
+		
+	}
+	@Override
+	public boolean keyDown(int keycode) {
+		return false;
+	}
+	@Override
+	public boolean keyUp(int keycode) {
+		return false;
+	}
+	@Override
+	public boolean keyTyped(char character) {
+		return false;
+	}
+	@Override
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		return false;
+	}
+	
+	@Override
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		return false;
+	}
+	@Override
+	public boolean mouseMoved(int screenX, int screenY) {
+		return false;
+	}
+	@Override
+	public boolean scrolled(int amount) {
+		return false;
+	}
+}
