@@ -1,6 +1,10 @@
 package screens;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -35,10 +39,14 @@ public class GameScreen implements Screen, InputProcessor {
 	private Card card1;
 	private Card card2;
 	private Boolean isPlaying = true;
+	private Boolean showingCards = true;
 	private int wrongGuesses = 3;
 	private Boolean gameOver = false;
 	private float timer = 0;
 	private int guessedInARow = 0;
+	
+	private int gameLevel = 0;
+	private int timeDifficulty = 2000;
 	
 	public Array<HashMap<String, Float>> coord = new Array<HashMap<String, Float>>();
 	public Array<Card> cards;
@@ -49,7 +57,6 @@ public class GameScreen implements Screen, InputProcessor {
 		float h = Gdx.graphics.getHeight();
 		Gdx.input.setInputProcessor(this);
 		
-		setCoordinates();
 		
 		bgMusic = Gdx.audio.newMusic(Gdx.files.internal("data/BGMusic.mp3"));
 		bgMusic.setVolume(0.15f);
@@ -138,7 +145,7 @@ public class GameScreen implements Screen, InputProcessor {
 		hotStreak = new Sprite(region);
 		hotStreak.setSize(.256f, .078f);
 		hotStreak.setOrigin(hotStreak.getWidth()/2, hotStreak.getHeight()/2);
-		hotStreak.setPosition(.2f, .1f);
+		hotStreak.setPosition(-.02f, .2f);
 
 		// wrong card
 		texture = new Texture(Gdx.files.internal("data/wrong.png"));
@@ -149,14 +156,14 @@ public class GameScreen implements Screen, InputProcessor {
 		strike1 = new Sprite(region);
 		strike1.setSize(.08f, .115f);
 		strike1.setOrigin(strike1.getWidth()/2, strike1.getHeight()/2);
-		strike1.setPosition(-.4f, .1f);
+		strike1.setPosition(-.45f, .08f);
 		
 		region = new TextureRegion(texture, 0, 0, 80, 115);
 
 		strike2 = new Sprite(region);
 		strike2.setSize(.08f, .115f);
 		strike2.setOrigin(strike2.getWidth()/2, strike2.getHeight()/2);
-		strike2.setPosition(-.4f, -.05f);
+		strike2.setPosition(-.45f, -.07f);
 		
 		// correct card
 		texture = new Texture(Gdx.files.internal("data/correctCard.png"));
@@ -167,14 +174,14 @@ public class GameScreen implements Screen, InputProcessor {
 		correct1 = new Sprite(region);
 		correct1.setSize(.08f, .115f);
 		correct1.setOrigin(correct1.getWidth()/2, correct1.getHeight()/2);
-		correct1.setPosition(.20f, .05f);
+		correct1.setPosition(-.02f, .18f);
 
 		region = new TextureRegion(texture, 0, 0, 90, 125);
 
 		correct2 = new Sprite(region);
 		correct2.setSize(.08f, .115f);
 		correct2.setOrigin(correct2.getWidth()/2, correct2.getHeight()/2);
-		correct2.setPosition(.30f, .05f);
+		correct2.setPosition(.08f, .18f);
 
 		// back button
 		texture = new Texture(Gdx.files.internal("data/backButton.png"));
@@ -190,29 +197,68 @@ public class GameScreen implements Screen, InputProcessor {
 //// CARD CREATION /////////////////////
 		
 		restart(); // uses array of coordinates to make an array of Card objects -- fresh start
+		displayCards();
 	}
 
-	private void restart() { // -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-   Randomize card placement here eventually, MGD 2?
+	private void restart() { 
 		int i = 0;
+		int length = 0;
+
+		if (gameLevel == 0) {
+			length = 12;
+		} else if (gameLevel == 1) {
+			length = 16;
+		} else if (gameLevel == 2) {
+			length = 20;
+		} else {
+			length = 24;
+		}
+		
+		ArrayList<Integer> numbers = new ArrayList<Integer>();
+	    for(int x = 0; x < length; x++) {
+	    	numbers.add(x);
+	    }
+	    Collections.shuffle(numbers); // Randomizes the numbers array so each card gets a letter based on that number
+	    
+		setCoordinates();
 		cards = new Array<Card>();
 		for (HashMap<String, Float> hm : coord) {
 			String str = "";
-			if (i < 2) {
+			if (numbers.get(i) < 2) {
 				str = "a";
-			} else if (i < 4 && i >= 2) {
+			} else if (numbers.get(i) < 4 && numbers.get(i) >= 2) {
 				str = "b";
-			} else if (i < 6 && i >= 4) {
+			} else if (numbers.get(i) < 6 && numbers.get(i) >= 4) {
 				str = "c";
-			} else if (i < 8 && i >= 6) {
+			} else if (numbers.get(i) < 8 && numbers.get(i) >= 6) {
 				str = "d";
-			} else if (i < 10 && i >= 8) {
+			} else if (numbers.get(i) < 10 && numbers.get(i) >= 8) {
 				str = "e";
-			} else if (i < 12 && i >= 10) {
+			} else if (numbers.get(i) < 12 && numbers.get(i) >= 10) {
 				str = "f";
+			} else if (numbers.get(i) < 14 && numbers.get(i) >=12) {
+				str = "g";
+			} else if (numbers.get(i) < 16 && numbers.get(i) >=14) {
+				str = "h";
+			} else if (numbers.get(i) < 18 && numbers.get(i) >=16) {
+				str = "i";
+			} else if (numbers.get(i) < 20 && numbers.get(i) >=18) {
+				str = "j";
+			} else if (numbers.get(i) < 22 && numbers.get(i) >=20) {
+				str = "k";
+			} else if (numbers.get(i) < 24 && numbers.get(i) >=22) {
+				str = "l";
 			}
 			Card card = new Card(hm.get("x"), hm.get("y"), str);
 			cards.add(card);
 			i++;
+		}
+	}
+
+	private void displayCards() {
+		showingCards = true;
+		for (Card card : cards) {
+			card.flipCard();
 		}
 	}
 
@@ -239,6 +285,16 @@ public class GameScreen implements Screen, InputProcessor {
 		batch.begin();
 		sprite.draw(batch);
 		if (cards.size > 0) {
+			if (showingCards) {
+				timer += dt;
+				if (timer > 4) {
+					for (Card card2 : cards) {
+						card2.flipCard();
+					}
+					showingCards = false;
+					timer = 0;
+				}
+			}
 			if (!gameOver) { //																		 GAME PLAY SCREEN
 				if (guessedInARow == 1) { //                DRAW CURRENT HOT STREAK
 					correct1.draw(batch);
@@ -313,9 +369,19 @@ public class GameScreen implements Screen, InputProcessor {
 					batch.end();
 				}
 			} else {  //                   							  WHILE GAME OVER [LOSS]
+				timer += dt;
 				shadow.draw(batch);
 				gameOverText.draw(batch);
 				batch.end();
+				if (timer >= 3) {
+					wrongGuesses = 3;
+					guessedInARow = 0;
+					gameLevel = 0;
+					restart();
+					timer = 0;
+					gameOver = false;
+					displayCards();
+				} 
 			}
 		} else {  //												WHILE GAME OVER [WIN]
 			timer += dt;
@@ -326,8 +392,10 @@ public class GameScreen implements Screen, InputProcessor {
 			if (timer >= 3) {
 				wrongGuesses = 3;
 				guessedInARow = 0;
+				gameLevel += 1;
 				restart();
 				timer = 0;
+				displayCards();
 			} 
 		}
 	}
@@ -430,6 +498,48 @@ public class GameScreen implements Screen, InputProcessor {
 								} else {
 									card2 = card;
 								}
+							} else if (str.equals("g")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
+							} else if (str.equals("h")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
+							} else if (str.equals("i")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
+							} else if (str.equals("j")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
+							} else if (str.equals("k")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
+							} else if (str.equals("l")) {
+								card.flipCard();
+								if (card1 == null) {
+									card1 = card;
+								} else {
+									card2 = card;
+								}
 							}
 						}
 						
@@ -446,21 +556,15 @@ public class GameScreen implements Screen, InputProcessor {
 								if (wrongGuesses == 0) {
 									answer = "";
 									gameOver = true;
+									gameLevel = 0;
+									timeDifficulty = 2000;
 									restart();
 									card1 = null;
 									card2 = null;
-									Timer timer = new Timer();
-			            			timer.schedule(new TimerTask() { 
-			            				// 								GAME OVER screen
-			            				public void run() {
-			            					gameOver = false;
-			            					wrongGuesses = 3;
-			            				} 
-			            			}, 3000);
 								} else {
 									Timer timer = new Timer();
 									timer.schedule(new TimerTask() { 
-										// let the incorrect card display for 2 seconds, then hide and return to neutral state
+										// let the incorrect card display then hide and return to neutral state
 										public void run() {
 											answer = "";
 											card1.flipCard();
@@ -468,7 +572,7 @@ public class GameScreen implements Screen, InputProcessor {
 											card1 = null;
 											card2 = null;
 										} 
-									}, 200);
+									}, timeDifficulty);
 								}
 							}
 						}
@@ -527,71 +631,140 @@ public class GameScreen implements Screen, InputProcessor {
 		}
 	}
 	
-	private void setCoordinates() {
-		HashMap<String, Float> hm = new HashMap<String, Float>();
-		hm.put("x", -.25f);
-		hm.put("y", .15f);
+	private void setCoordinates() { // INITIAL LEVEL 0 SETUP
+		coord.clear();
+		HashMap<String, Float> hm = new HashMap<String, Float>(); // row 1
+		hm.put("x", -.33f);
+		hm.put("y", .06f);
+		coord.add(hm);
+
+		hm = new HashMap<String, Float>();
+		hm.put("x", -.24f);
+		hm.put("y", .06f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
 		hm.put("x", -.15f);
-		hm.put("y", .15f);
+		hm.put("y", .06f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
-		hm.put("x", -.05f);
-		hm.put("y", .15f);
+		hm.put("x", -.06f);
+		hm.put("y", .06f);
+		coord.add(hm);
+
+		hm = new HashMap<String, Float>(); // row 2
+		hm.put("x", -.33f);
+		hm.put("y", -.05f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
-		hm.put("x", .05f);
-		hm.put("y", .15f);
-		coord.add(hm);
-
-		hm = new HashMap<String, Float>();
-		hm.put("x", -.25f);
-		hm.put("y", .0f);
-		coord.add(hm);
-
-		hm = new HashMap<String, Float>();
-		hm.put("x", -.15f);
-		hm.put("y", .0f);
-		coord.add(hm);
-
-		hm = new HashMap<String, Float>();
-		hm.put("x", -.05f);
-		hm.put("y", .0f);
-		coord.add(hm);
-
-		hm = new HashMap<String, Float>();
-		hm.put("x", .05f);
-		hm.put("y", .0f);
-		coord.add(hm);
-
-		hm = new HashMap<String, Float>();
-		hm.put("x", -.25f);
-		hm.put("y", -.15f);
+		hm.put("x", -.24f);
+		hm.put("y", -.05f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
 		hm.put("x", -.15f);
-		hm.put("y", -.15f);
+		hm.put("y", -.05f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
-		hm.put("x", -.05f);
-		hm.put("y", -.15f);
+		hm.put("x", -.06f);
+		hm.put("y", -.05f);
+		coord.add(hm);
+
+		hm = new HashMap<String, Float>(); // row 3
+		hm.put("x", -.33f);
+		hm.put("y", -.16f);
 		coord.add(hm);
 
 		hm = new HashMap<String, Float>();
-		hm.put("x", .05f);
-		hm.put("y", -.15f);
+		hm.put("x", -.24f);
+		hm.put("y", -.16f);
 		coord.add(hm);
+
+		hm = new HashMap<String, Float>();
+		hm.put("x", -.15f);
+		hm.put("y", -.16f);
+		coord.add(hm);
+
+		hm = new HashMap<String, Float>();
+		hm.put("x", -.06f);
+		hm.put("y", -.16f);
+		coord.add(hm);
+		
+		if (gameLevel > 0) { // LEVEL ONE DIFFICULTY -- G & H cards
+			hm = new HashMap<String, Float>(); // row 4
+			hm.put("x", -.33f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", -.24f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", -.15f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", -.06f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+		}
+		if (gameLevel > 1) { // LEVEL TWO DIFFICULTY -- + I & J cards
+			hm = new HashMap<String, Float>(); // column 4
+			hm.put("x", .03f);
+			hm.put("y", .06f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .03f);
+			hm.put("y", -.05f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .03f);
+			hm.put("y", -.16f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .03f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+		}
+		if (gameLevel > 2) { // LEVEL THREE DIFFICULTY -- + K & L cards
+			hm = new HashMap<String, Float>(); // column 4
+			hm.put("x", .12f);
+			hm.put("y", .06f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .12f);
+			hm.put("y", -.05f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .12f);
+			hm.put("y", -.16f);
+			coord.add(hm);
+
+			hm = new HashMap<String, Float>();
+			hm.put("x", .12f);
+			hm.put("y", -.27f);
+			coord.add(hm);
+		}
+		if (gameLevel > 3) { // ADDITIONAL DIFFICULTY -- increase speed
+			if (timeDifficulty != 1000) {
+				timeDifficulty -= 200;
+			}
+		}
 	}
 
 	@Override
 	public void hide() {
-		// TODO Auto-generated method stub
 		// Called when this screen is no longer the current Screen for a game.
 	}
 }

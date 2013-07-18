@@ -1,9 +1,0 @@
-package com.valleskeyp.mygdxgame;
-
-public class MyInputProcessor {
-
-	public MyInputProcessor() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

@@ -1,9 +1,0 @@
-package com.valleskeyp.mygdxgame;
-
-public class holder {
-
-	public holder() {
-		// TODO Auto-generated constructor stub
-	}
-
-}

@@ -56,10 +56,10 @@ public class Card {
 			
 			if (isFlipped) {
 				animation.setPlayMode(Animation.NORMAL);
-				batch.draw(animation.getKeyFrame(time += dt), xCoord, yCoord, .08f, .115f);
+				batch.draw(animation.getKeyFrame(time += dt*3), xCoord, yCoord, .08f, .115f);
 			} else if (!isFlipped) {
 				animation.setPlayMode(Animation.REVERSED);
-				batch.draw(animation.getKeyFrame(time += dt), xCoord, yCoord, .08f, .115f);
+				batch.draw(animation.getKeyFrame(time += dt*3), xCoord, yCoord, .08f, .115f);
 			}
 		}
 		
